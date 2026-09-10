@@ -142,20 +142,25 @@ def tao_mo_hinh_chi_tiet(doc):
     5. 5 Cánh đảo trong: La sắt bản 7cm (70mm), dày 0.5cm (5mm), CHẠM TRỰC TIẾP VÀO CÂY TRỤ ĐỂ HÀN VÀO!
     """
     # -------------------------------------------------------------
-    # 1. VỎ TRỐNG TRONG HÌNH TRỤ SẮT (D80cm x L1m x Dày 0.8cm)
+    # 1. VỎ TRỐNG TRONG HÌNH TRỤ SẮT (D80cm x L1m x DÀY 0.8cm)
+    #    - Yêu cầu: Giữ nguyên trống 100cm, dời 2 mặt máy ra xa nhau thêm 10cm (lọt lòng 110cm)
+    #    - Đầu trước áp sát mặt máy trước, chừa lại 0.5mm: Y_drum_start = -500.0 + 0.5 = -499.5mm
+    #    - Chiều dài trống: 1000mm (Y = -499.5 đến +500.5mm)
+    #    - Mặt sau còn lại đúng 9.95cm (99.5mm): mặt máy sau đặt tại Y = +500.5 + 99.5 = +600.0mm!
     # -------------------------------------------------------------
-    chieu_dai = 1000.0   # 1m
+    chieu_dai = 1000.0   # 1m = 100cm
     r_ngoai = 400.0      # Ngang 80cm -> R = 400mm
     do_day = 8.0         # Dày 0.8cm = 8mm
     r_trong = r_ngoai - do_day  # 392mm
+    Y_drum_start = -499.5  # Đầu trước cách mặt máy trước (-500) đúng 0.5mm chống cạ
 
-    cyl_out = Part.makeCylinder(r_ngoai, chieu_dai, App.Vector(0, -chieu_dai / 2.0, 0), App.Vector(0, 1, 0))
-    cyl_in = Part.makeCylinder(r_trong, chieu_dai + 20.0, App.Vector(0, -chieu_dai / 2.0 - 10.0, 0), App.Vector(0, 1, 0))
+    cyl_out = Part.makeCylinder(r_ngoai, chieu_dai, App.Vector(0, Y_drum_start, 0), App.Vector(0, 1, 0))
+    cyl_in = Part.makeCylinder(r_trong, chieu_dai + 20.0, App.Vector(0, Y_drum_start - 10.0, 0), App.Vector(0, 1, 0))
     hinh_trong = cyl_out.cut(cyl_in)
 
     obj_trong = doc.addObject("Part::Feature", "Trong_Hinh_Tru_Sat")
     obj_trong.Shape = hinh_trong
-    obj_trong.Label = "1. Vỏ Trống Trong (D80cm x L1m x Dày 0.8cm)"
+    obj_trong.Label = "1. Vỏ Trống Trong (D80cm x L1m x Dày 0.8cm, Hở Trước 0.5mm)"
     # Mặc định để trong suốt nhẹ 45% để nhìn thấu các cánh đảo bên trong
     gan_mau(obj_trong, (0.76, 0.79, 0.84), do_trong_suot=45)
 
@@ -170,8 +175,8 @@ def tao_mo_hinh_chi_tiet(doc):
     r_ao_in = r_ngoai + khoang_cach_khi  # 410.0mm
     r_ao_out = r_ao_in + do_day_ao       # 415.0mm
 
-    cyl_ao_out = Part.makeCylinder(r_ao_out, chieu_dai, App.Vector(0, -chieu_dai / 2.0, 0), App.Vector(0, 1, 0))
-    cyl_ao_in = Part.makeCylinder(r_ao_in, chieu_dai + 20.0, App.Vector(0, -chieu_dai / 2.0 - 10.0, 0), App.Vector(0, 1, 0))
+    cyl_ao_out = Part.makeCylinder(r_ao_out, chieu_dai, App.Vector(0, Y_drum_start, 0), App.Vector(0, 1, 0))
+    cyl_ao_in = Part.makeCylinder(r_ao_in, chieu_dai + 20.0, App.Vector(0, Y_drum_start - 10.0, 0), App.Vector(0, 1, 0))
     hinh_ao = cyl_ao_out.cut(cyl_ao_in)
 
     obj_ao_ngoai = doc.addObject("Part::Feature", "Lop_Ao_Trong_Ngoai_Cach_Khi")
@@ -181,22 +186,62 @@ def tao_mo_hinh_chi_tiet(doc):
     gan_mau(obj_ao_ngoai, (0.70, 0.75, 0.82), do_trong_suot=55, line_color=(0.15, 0.20, 0.30), line_width=1.5)
 
     # -------------------------------------------------------------
-    # 2. CÂY LÁP (TRỤC BẬC) DÀI 1M2, THÂN PHI 65MM, 2 ĐẦU PHI 60MM X 10CM
+    # 1c. TẤM SẮT TRÒN ĐÁY SAU TRỐNG RANG: LỌT LÒNG VÒNG TRÒN NHỎ (D78.4CM, DÀY 8MM, LỖ D65MM)
+    #    - Khớp chính xác với vòng tròn NHỎ bên trong (Vỏ trống trong Rin = 392mm -> D = 784mm = 78.4cm)
+    #    - Thụt vào trong lòng trống 8mm (bằng đúng chiều dày đĩa) tạo gờ mép bảo vệ và khe hàn góc âm
+    #    - Khoét lỗ xuyên tâm phi 65mm (R = 32.5mm) xỏ khít qua thân cây láp chính phi 65mm
+    #    - Mối hàn ngấu:
+    #      + Vành hàn cổ trục: Fillet collar ôm cốt láp phi 65mm (R = 32.5 -> 38mm, dày 4mm)
+    #      + Vành hàn mép chu vi trong: Fillet seam ôm khít thành trong trống (R = 386 -> 392mm, dày 4mm)
+    #    - Vị trí trục Y: Nằm từ Y = 484.5mm đến Y = 496.5mm (thụt vào trong lòng trống so với mép đuôi 500.5mm)
+    #    - Khoảng cách từ đuôi trống đến mặt máy sau (+600.0mm) bảo toàn chuẩn xác 9.95cm (99.5mm)!
+    # -------------------------------------------------------------
+    Y_drum_end = Y_drum_start + chieu_dai  # +500.5mm
+    T_day = 8.0
+    recess = 5.0
+    Y_day_out = Y_drum_end - recess       # 495.5mm
+    Y_day_in = Y_day_out - T_day          # 487.5mm
+    r_shaft = 32.5                        # Bán kính thân cây láp phi 65mm
+
+    # Đĩa sắt tròn chính lọt lòng
+    cyl_day_out = Part.makeCylinder(r_trong, T_day, App.Vector(0, Y_day_in, 0), App.Vector(0, 1, 0))
+    cyl_day_in = Part.makeCylinder(r_shaft, T_day + 10.0, App.Vector(0, Y_day_in - 5.0, 0), App.Vector(0, 1, 0))
+    dia_chinh = cyl_day_out.cut(cyl_day_in)
+
+    # Vành hàn ngấu cổ trục (fillet weld collar quanh cốt láp)
+    weld_shaft_out = Part.makeCylinder(38.0, 4.0, App.Vector(0, Y_day_out, 0), App.Vector(0, 1, 0))
+    weld_shaft_in = Part.makeCylinder(r_shaft, 6.0, App.Vector(0, Y_day_out - 1.0, 0), App.Vector(0, 1, 0))
+    co_han_truc = weld_shaft_out.cut(weld_shaft_in)
+
+    # Vành hàn ngấu mép chu vi trong (fillet weld seam)
+    weld_rim_out = Part.makeCylinder(r_trong, 4.0, App.Vector(0, Y_day_out, 0), App.Vector(0, 1, 0))
+    weld_rim_in = Part.makeCylinder(r_trong - 6.0, 6.0, App.Vector(0, Y_day_out - 1.0, 0), App.Vector(0, 1, 0))
+    vanh_han_mep = weld_rim_out.cut(weld_rim_in)
+
+    hinh_day_sau = Part.makeCompound([dia_chinh, co_han_truc, vanh_han_mep])
+
+    obj_day_sau = doc.addObject("Part::Feature", "Day_Trong_Sau_Sat_Tron_Lot_Long")
+    obj_day_sau.Shape = hinh_day_sau
+    obj_day_sau.Label = "1c. Tấm Sắt Tròn Đáy Sau Trống (D78.4cm x Dày 0.8cm Lọt Lòng, Lỗ D65mm, Hàn Góc Âm)"
+    gan_mau(obj_day_sau, (0.75, 0.78, 0.82), line_color=(0.20, 0.25, 0.35), line_width=1.8, do_trong_suot=45)
+
+    # -------------------------------------------------------------
+    # 2. CÂY LÁP (TRỤC BẬC) DÀI 1M3, THÂN PHI 65MM, 2 ĐẦU PHI 60MM X 10CM
     # -------------------------------------------------------------
     shapes_lap = []
-    # Đầu 1: phi 60mm (R = 30mm), dài 100mm (10cm) tại Y: -600 đến -500
+    # Đầu 1: phi 60mm (R = 30mm), dài 100mm (10cm) tại Y: -600 đến -500 (nhô ra 82mm ngoài mặt trước)
     dau_1 = Part.makeCylinder(30.0, 100.0, App.Vector(0, -600.0, 0), App.Vector(0, 1, 0))
-    # Thân giữa (Cây Trụ Chính): phi 65mm (R = 32.5mm), dài 1000mm tại Y: -500 đến +500
-    than_giua = Part.makeCylinder(32.5, 1000.0, App.Vector(0, -500.0, 0), App.Vector(0, 1, 0))
-    # Đầu 2: phi 60mm (R = 30mm), dài 100mm (10cm) tại Y: +500 đến +600
-    dau_2 = Part.makeCylinder(30.0, 100.0, App.Vector(0, 500.0, 0), App.Vector(0, 1, 0))
+    # Thân giữa (Cây Trụ Chính): phi 65mm (R = 32.5mm), dài 1100mm tại Y: -500 đến +600
+    than_giua = Part.makeCylinder(32.5, 1100.0, App.Vector(0, -500.0, 0), App.Vector(0, 1, 0))
+    # Đầu 2: phi 60mm (R = 30mm), dài 100mm (10cm) tại Y: +600 đến +700 (nhô ra 82mm ngoài mặt sau)
+    dau_2 = Part.makeCylinder(30.0, 100.0, App.Vector(0, 600.0, 0), App.Vector(0, 1, 0))
 
     shapes_lap.extend([dau_1, than_giua, dau_2])
     hinh_lap = Part.makeCompound(shapes_lap)
 
     obj_lap = doc.addObject("Part::Feature", "Cay_Lap_Truc_Bac")
     obj_lap.Shape = hinh_lap
-    obj_lap.Label = "2. Cây Láp Trục Bậc (L1m2, Thân D65mm, 2 Đầu D60mm x 10cm)"
+    obj_lap.Label = "2. Cây Láp Trục Bậc (L1m3, Thân D65mm, 2 Đầu D60mm x 10cm)"
     gan_mau(obj_lap, (0.90, 0.72, 0.22), line_color=(0.35, 0.25, 0.05), line_width=2.0)
 
     # -------------------------------------------------------------
@@ -820,14 +865,15 @@ def tao_mo_hinh_chi_tiet(doc):
 
     # -------------------------------------------------------------
     # 7. MẶT MÁY SAU ĐỂ GÁ TRỐNG: SẮT DÀY 1.8CM (CHÂN VÁT GỜ ĐỨNG 5.5CM GIỐNG MẶT TRƯỚC)
-    #    - Vị trí trục Y: Từ Y = +500.0mm đến Y = +518.0mm (ngay miệng sau của trống)
-    #    - Kích thước giống mặt trước: Cung tròn D96cm (R480mm) thắt eo -40° phía trên,
-    #      chân vát chéo ra biên 550mm tại cao độ cách chân 5.5cm rồi vuông góc thẳng đứng xuống sàn Z = -850mm.
+    #    - Yêu cầu mới: Khoảng cách lọt lòng 2 mặt máy tăng từ 100cm -> 110cm
+    #    - Đầu trước trống cách mặt máy trước 0.5mm (Y_drum_front = -499.5mm)
+    #    - Đuôi sau trống tại Y_drum_rear = +500.5mm
+    #    - Mặt sau còn lại đúng 9.95cm (99.5mm): Y_mat_sau = 500.5 + 99.5 = 600.0mm!
+    #    - Vị trí trục Y: Từ Y = +600.0mm đến Y = +618.0mm (dày 18mm)
     #    - Lỗ khoét phi 65mm (R = 32.5mm) tại tâm (0, 0) để lọt đầu cốt láp phi 60mm phía sau.
-    #    - Đoạn đầu cốt láp sau (dài 100mm, từ Y=+500 đến Y=+600) nhô ra ngoài 82mm để lắp gối bi & puly kéo.
-    #    - Chi tiết tĩnh: Gá cố định vào khung bệ máy, cùng với mặt trước nâng đỡ toàn bộ trống rang.
+    #    - Đoạn đầu cốt láp sau (dài 100mm, từ Y=+600 đến Y=+700) nhô ra ngoài 82mm để lắp gối bi & puly kéo.
     # -------------------------------------------------------------
-    Y_mat_sau = 500.0
+    Y_mat_sau = 600.0
     arc_sau = Part.Arc(
         App.Vector(x_tR, Y_mat_sau, z_tR),
         App.Vector(0, Y_mat_sau, R_mat),
@@ -924,9 +970,9 @@ def tao_mo_hinh_chi_tiet(doc):
     #        Dư mỗi bên trái phải 0.5cm (5mm): từ X = -555.0mm đến X = +555.0mm.
     #        -> Tổng chiều rộng: W = 1110.0mm = 111.0cm = 1.11m.
     #      + Chiều dài (Trước - Sau theo trục Y):
-    #        Chân mặt trước tại Y = -518mm, chân mặt sau tại Y = +518mm (khoảng cách 1036mm).
-    #        Dư mỗi bên trước sau 0.5cm (5mm): từ Y = -523.0mm đến Y = +523.0mm.
-    #        -> Tổng chiều dài: L = 1046.0mm = 104.6cm = 1.046m.
+    #        Chân mặt trước tại Y = -518mm, chân mặt sau mới tại Y = +618mm (khoảng cách 1136mm).
+    #        Dư mỗi bên trước sau 0.5cm (5mm): từ Y = -523.0mm đến Y = +623.0mm.
+    #        -> Tổng chiều dài: L = 1146.0mm = 114.6cm = 1.146m.
     #      + Độ dày & Cao độ (theo trục Z):
     #        Độ dày tấm: đúng 0.5cm (5.0mm).
     #        Mặt trên của chân đế tại Z = -850.0mm (đỡ trọn vẹn đáy 2 mặt máy).
@@ -934,14 +980,14 @@ def tao_mo_hinh_chi_tiet(doc):
     #    - Chi tiết tĩnh: Hàn/bắt bu lông chắc chắn với chân của 2 mặt máy, tạo khối khung gầm đầm chắc 100%.
     # -------------------------------------------------------------
     W_chan = 1110.0
-    L_chan = 1046.0
+    L_chan = 1146.0  # Dư mỗi bên trước sau 0.5cm (từ Y = -523.0 đến +623.0mm)
     T_chan = 5.0
     pnt_chan = App.Vector(-555.0, -523.0, -855.0)
 
     hinh_chan_de = Part.makeBox(W_chan, L_chan, T_chan, pnt_chan)
     obj_chan_de = doc.addObject("Part::Feature", "Chan_De_May_Hinh_Chu_Nhat_5mm")
     obj_chan_de.Shape = hinh_chan_de
-    obj_chan_de.Label = "8. Chân Đế Máy Hình Chữ Nhật (Sắt Dày 0.5cm, 111cm x 104.6cm, Dư Trước Sau Trái Phải 0.5cm)"
+    obj_chan_de.Label = "8. Chân Đế Máy Hình Chữ Nhật (Sắt Dày 0.5cm, 111cm x 114.6cm, Dư Trước Sau Trái Phải 0.5cm)"
     # Màu xám đen thép tấm bệ sàn
     gan_mau(obj_chan_de, (0.22, 0.26, 0.32), line_color=(0.08, 0.10, 0.15), line_width=2.0)
 
@@ -1003,22 +1049,22 @@ def tao_mo_hinh_chi_tiet(doc):
     #     - Có tay khóa then gài L-handle bên phải (X = +210, Z = -650)
     # -------------------------------------------------------------
     shapes_cua = []
-    # Cánh cửa sắt tấm 18mm
-    plate_cua = Part.makeBox(498.0, 18.0, 298.0, App.Vector(-249.0, 500.0, -799.0))
+    # Cánh cửa sắt tấm 18mm (tại Y_mat_sau = 600mm đến 618mm)
+    plate_cua = Part.makeBox(498.0, 18.0, 298.0, App.Vector(-249.0, Y_mat_sau, -799.0))
     shapes_cua.append(plate_cua)
 
-    # 2 Bản lề cối bên trái (nhìn trực diện từ phía sau: X = +249.5, Y = 518mm)
+    # 2 Bản lề cối bên trái (nhìn trực diện từ phía sau: X = +249.5, Y = Y_mat_sau + 18mm = 618mm)
     for z_h in [-560.0, -740.0]:
-        k_up = Part.makeCylinder(10.0, 24.0, App.Vector(249.5, 526.0, z_h + 1.0), App.Vector(0, 0, 1))
-        tab_door = Part.makeBox(15.0, 8.0, 24.0, App.Vector(234.5, 518.0, z_h + 1.0))
-        pin = Part.makeCylinder(6.0, 48.0, App.Vector(249.5, 526.0, z_h - 23.0), App.Vector(0, 0, 1))
+        k_up = Part.makeCylinder(10.0, 24.0, App.Vector(249.5, Y_mat_sau + 26.0, z_h + 1.0), App.Vector(0, 0, 1))
+        tab_door = Part.makeBox(15.0, 8.0, 24.0, App.Vector(234.5, Y_mat_sau + 18.0, z_h + 1.0))
+        pin = Part.makeCylinder(6.0, 48.0, App.Vector(249.5, Y_mat_sau + 26.0, z_h - 23.0), App.Vector(0, 0, 1))
         shapes_cua.extend([k_up, tab_door, pin])
 
     # Tay khóa then gài L-handle bên phải (nhìn trực diện từ phía sau: X = -210, Z = -650)
-    h_boss = Part.makeCylinder(13.0, 16.0, App.Vector(-210.0, 518.0, -650.0), App.Vector(0, 1, 0))
-    h_bar = Part.makeCylinder(7.0, 85.0, App.Vector(-210.0, 534.0, -650.0), App.Vector(0, 0, -1))
-    h_knob = Part.makeSphere(10.0, App.Vector(-210.0, 534.0, -735.0))
-    h_tongue = Part.makeBox(35.0, 8.0, 16.0, App.Vector(-250.0, 492.0, -658.0))
+    h_boss = Part.makeCylinder(13.0, 16.0, App.Vector(-210.0, Y_mat_sau + 18.0, -650.0), App.Vector(0, 1, 0))
+    h_bar = Part.makeCylinder(7.0, 85.0, App.Vector(-210.0, Y_mat_sau + 34.0, -650.0), App.Vector(0, 0, -1))
+    h_knob = Part.makeSphere(10.0, App.Vector(-210.0, Y_mat_sau + 34.0, -735.0))
+    h_tongue = Part.makeBox(35.0, 8.0, 16.0, App.Vector(-250.0, Y_mat_sau - 8.0, -658.0))
     shapes_cua.extend([h_boss, h_bar, h_knob, h_tongue])
 
     hinh_cua_sau = Part.makeCompound(shapes_cua)
@@ -1029,15 +1075,15 @@ def tao_mo_hinh_chi_tiet(doc):
 
     # -------------------------------------------------------------
     # 12. 2 BẢN LỀ CỐI CỬA SAU: HÀN CỐ ĐỊNH VÀO MẶT MÁY SAU BÊN TRÁI
-    #     - Vị trí: Mép bên trái lỗ cắt (nhìn từ phía sau: X = +249.5mm, Y = 518mm)
+    #     - Vị trí: Mép bên trái lỗ cắt (nhìn từ phía sau: X = +249.5mm, Y = Y_mat_sau + 18mm)
     #     - Cối dưới phi 20mm hàn cố định vào mặt máy sau, đệm long đền đồng
     #     - Cho phép cửa mở xoay về bên trái góc 0 - 120 độ
     # -------------------------------------------------------------
     shapes_ban_le_khung = []
     for z_h in [-560.0, -740.0]:
-        k_low = Part.makeCylinder(10.0, 24.0, App.Vector(249.5, 526.0, z_h - 25.0), App.Vector(0, 0, 1))
-        wash = Part.makeCylinder(11.0, 2.0, App.Vector(249.5, 526.0, z_h - 1.0), App.Vector(0, 0, 1))
-        tab_frame = Part.makeBox(15.0, 8.0, 24.0, App.Vector(249.5, 518.0, z_h - 25.0))
+        k_low = Part.makeCylinder(10.0, 24.0, App.Vector(249.5, Y_mat_sau + 26.0, z_h - 25.0), App.Vector(0, 0, 1))
+        wash = Part.makeCylinder(11.0, 2.0, App.Vector(249.5, Y_mat_sau + 26.0, z_h - 1.0), App.Vector(0, 0, 1))
+        tab_frame = Part.makeBox(15.0, 8.0, 24.0, App.Vector(249.5, Y_mat_sau + 18.0, z_h - 25.0))
         shapes_ban_le_khung.extend([k_low, wash, tab_frame])
 
     hinh_ban_le_sau = Part.makeCompound(shapes_ban_le_khung)
@@ -1077,23 +1123,23 @@ def tao_mo_hinh_chi_tiet(doc):
     shapes_buong_dot = []
     gap_gach = 1.5
 
-    # 1. Sàn đáy buồng đốt: Z = -850 đến -800mm (dày 50mm, 7 hàng x 100mm = rộng 700mm)
+    # 1. SÀN ĐÁY BUỒNG ĐỐT: Z = -850 đến -800mm (dày 50mm, 7 hàng x 100mm = rộng 700mm, dài 1100mm từ Y = -500 đến +600mm)
     z_floor = -850.0
     h_floor = 50.0 - gap_gach
     for col in range(7):
         x_min = -350.0 + col * 100.0 + gap_gach / 2.0
         w_brick = 100.0 - gap_gach
         if col % 2 == 0:
-            segments = [(-500.0, 300.0), (-200.0, 300.0), (100.0, 300.0), (400.0, 100.0)]
+            segments = [(-500.0, 300.0), (-200.0, 300.0), (100.0, 300.0), (400.0, 200.0)]
         else:
-            segments = [(-500.0, 100.0), (-400.0, 300.0), (-100.0, 300.0), (200.0, 300.0)]
+            segments = [(-500.0, 200.0), (-300.0, 300.0), (0.0, 300.0), (300.0, 300.0)]
         for y_start, l_seg in segments:
             y_min = y_start + gap_gach / 2.0
             l_brick = l_seg - gap_gach
             brick = Part.makeBox(w_brick, l_brick, h_floor, App.Vector(x_min, y_min, z_floor + gap_gach / 2.0))
             shapes_buong_dot.append(brick)
 
-    # 2. Hai vách hông lò bao 1 lớp gạch dày 10cm, chừa ngang 50cm, cao 9 hàng đến Z = -350mm
+    # 2. Hai vách hông lò bao 1 lớp gạch dày 10cm, chừa ngang 50cm, cao 9 hàng đến Z = -350mm (dài 1100mm)
     wall_cols = [(-350.0, -250.0), (250.0, 350.0)]
     for x_start, x_end in wall_cols:
         x_min = x_start + gap_gach / 2.0
@@ -1102,9 +1148,9 @@ def tao_mo_hinh_chi_tiet(doc):
             z_c = -800.0 + course * 50.0 + gap_gach / 2.0
             h_c = 50.0 - gap_gach
             if course % 2 == 0:
-                segments = [(-500.0, 300.0), (-200.0, 300.0), (100.0, 300.0), (400.0, 100.0)]
+                segments = [(-500.0, 300.0), (-200.0, 300.0), (100.0, 300.0), (400.0, 200.0)]
             else:
-                segments = [(-500.0, 100.0), (-400.0, 300.0), (-100.0, 300.0), (200.0, 300.0)]
+                segments = [(-500.0, 200.0), (-300.0, 300.0), (0.0, 300.0), (300.0, 300.0)]
             for y_start, l_seg in segments:
                 y_min = y_start + gap_gach / 2.0
                 l_brick = l_seg - gap_gach
@@ -1130,15 +1176,15 @@ def tao_mo_hinh_chi_tiet(doc):
     # 4. CƯA GỌT GẠCH TẠO HÌNH CÁCH TRỐNG 1CM (BÁN KÍNH CƯA R = 425mm)
     raw_buong_dot = Part.makeCompound(shapes_buong_dot)
     r_cut = 425.0  # R_ao(415mm) + 10mm khoảng hở cách nhiệt = 425mm
-    saw_cutter = Part.makeCylinder(r_cut, 1040.0, App.Vector(0, -520.0, 0), App.Vector(0, 1, 0))
+    saw_cutter = Part.makeCylinder(r_cut, 1150.0, App.Vector(0, -525.0, 0), App.Vector(0, 1, 0))
     hinh_buong_dot = raw_buong_dot.cut(saw_cutter)
 
     obj_buong_dot_gach = doc.addObject("Part::Feature", "Buong_Dot_Cui_Gach_Sa_Mot_30x5x10")
     obj_buong_dot_gach.Shape = hinh_buong_dot
-    obj_buong_dot_gach.Label = "13. Buồng Đốt Củi Lót Gạch Chịu Lửa (KT 30x5x10cm, Lòng Rộng 50cm, Bao 1 Lớp Gạch 10cm, Cao Đến Trống, Cưa Gọt Cách 1cm Nằm Gọn Dưới Trống)"
+    obj_buong_dot_gach.Label = "13. Buồng Đốt Củi Lót Gạch Chịu Lửa (KT 30x5x10cm, Dài 110cm, Lòng Rộng 50cm, Bao 1 Lớp Gạch 10cm, Cưa Gọt Cách 1cm Nằm Gọn Dưới Trống)"
     gan_mau(obj_buong_dot_gach, (0.84, 0.48, 0.26), line_color=(0.35, 0.18, 0.08), line_width=1.5)
 
-    return obj_trong, obj_ao_ngoai, obj_lap, obj_chong, obj_canh_ngoai, obj_canh_trong, obj_mat_truoc, obj_mat_sau, obj_chan_de, obj_cay_tham, obj_tay_cam, obj_cua_sau, obj_ban_le_sau, obj_buong_dot_gach, obj_mang_nap, items_hop_may
+    return obj_trong, obj_ao_ngoai, obj_lap, obj_chong, obj_canh_ngoai, obj_canh_trong, obj_day_sau, obj_mat_truoc, obj_mat_sau, obj_chan_de, obj_cay_tham, obj_tay_cam, obj_cua_sau, obj_ban_le_sau, obj_buong_dot_gach, obj_mang_nap, items_hop_may
 
 
 def tao_hop_vo_hang(doc, plc=None, prefix=""):
@@ -1513,6 +1559,7 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         obj_chong=None,
         obj_canh_ngoai=None,
         obj_canh_trong=None,
+        obj_day_sau=None,
         obj_mat_truoc=None,
         obj_mat_sau=None,
         obj_chan_de=None,
@@ -1541,6 +1588,7 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         self.obj_chong = obj_chong
         self.obj_canh_ngoai = obj_canh_ngoai
         self.obj_canh_trong = obj_canh_trong
+        self.obj_day_sau = obj_day_sau
         self.obj_mat_truoc = obj_mat_truoc
         self.obj_mat_sau = obj_mat_sau
         self.obj_chan_de = obj_chan_de
@@ -2001,8 +2049,8 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
 
         placement = App.Placement(App.Vector(0, 0, 0), rot)
 
-        # Quay đồng bộ cả 6 đối tượng: Vỏ Trong, Áo Ngoài, Cây Láp, Cây Chống, Cánh Ngoài, Cánh Trong
-        for obj in [self.obj_trong, self.obj_ao_ngoai, self.obj_lap, self.obj_chong, self.obj_canh_ngoai, self.obj_canh_trong]:
+        # Quay đồng bộ cả 7 đối tượng: Vỏ Trong, Áo Ngoài, Cây Láp, Cây Chống, Cánh Ngoài, Cánh Trong, Đáy Sau
+        for obj in [self.obj_trong, self.obj_ao_ngoai, self.obj_lap, self.obj_chong, self.obj_canh_ngoai, self.obj_canh_trong, self.obj_day_sau]:
             if obj:
                 try:
                     obj.Placement = placement
@@ -2041,14 +2089,14 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
     def toggle_transparency(self):
         self.is_transparent = not self.is_transparent
         if kiem_tra_co_gui():
-            for obj, val in [(self.obj_trong, 45), (self.obj_ao_ngoai, 55)]:
+            for obj, val in [(self.obj_trong, 45), (self.obj_ao_ngoai, 55), (self.obj_day_sau, 45)]:
                 if obj and hasattr(obj, "ViewObject") and obj.ViewObject:
                     obj.ViewObject.Transparency = val if self.is_transparent else 0
 
     def toggle_drum_visibility(self):
         self.is_drum_visible = not self.is_drum_visible
         if kiem_tra_co_gui():
-            for obj in [self.obj_trong, self.obj_ao_ngoai]:
+            for obj in [self.obj_trong, self.obj_ao_ngoai, self.obj_day_sau]:
                 if hasattr(obj, "ViewObject") and obj.ViewObject:
                     obj.ViewObject.Visibility = self.is_drum_visible
 
@@ -2068,7 +2116,7 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         if self.obj_cua_sau is None:
             return
         self.is_door_open = not self.is_door_open
-        p_hinge = App.Vector(249.5, 526.0, 0.0)
+        p_hinge = App.Vector(249.5, 626.0, 0.0)
         angle = -120.0 if self.is_door_open else 0.0
         if self.is_door_open:
             self.btn_cua_sau.setText("🚪 Đóng Cửa Sau")
@@ -2101,7 +2149,7 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
                     rot_tilt = App.Rotation(App.Vector(0, 0, 1), 90.0)
                     obj.Placement = App.Placement(App.Vector(0, 0, 0), rot_tilt)
         if self.obj_cua_sau:
-            p_hinge = App.Vector(249.5, 526.0, 0.0)
+            p_hinge = App.Vector(249.5, 626.0, 0.0)
             angle = -120.0 if self.is_door_open else 0.0
             rot = App.Rotation(App.Vector(0, 0, 1), angle)
             plc = App.Placement(p_hinge, rot).multiply(App.Placement(-p_hinge, App.Rotation()))

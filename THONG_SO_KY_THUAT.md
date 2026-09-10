@@ -5,23 +5,50 @@
 
 ---
 
-## 1. Vỏ Trống Rang 2 Lớp (Đệm Khí Cách Nhiệt 1cm)
+## 1. Vỏ Trống Rang 2 Lớp (Đệm Khí Cách Nhiệt 1cm & Khe Hở Vận Hành Chuẩn Xác)
 * **Vỏ trong**:
-  * Chiều dài: $1000\text{ mm} = 1\text{ m}$.
+  * Chiều dài: Giữ nguyên vẹn **$1000\text{ mm} = 100\text{ cm} = 1\text{ m}$**.
+  * Tọa độ trục $Y$: $Y \in [-499.5\text{ mm}, +500.5\text{ mm}]$.
+  * **Khe hở đầu trước áp sát mặt máy**: Đúng **$0.5\text{ mm}$** so với mặt trong của Mặt Máy Trước ($Y = -500.0\text{ mm}$), chống cạ quẹt khi trống quay, tuyệt đối không lọt hạt.
+  * **Khe hở đầu sau buồng thoát nhiệt**: Đúng **$99.5\text{ mm} = 9.95\text{ cm}$** so với mặt trong của Mặt Máy Sau ($Y = +600.0\text{ mm}$), tạo khoảng không thông thoáng lý tưởng cho luồng khí nóng đối lưu và khói thoát lên ống thu khói.
   * Đường kính ngoài: $\varnothing 800\text{ mm} = 80\text{ cm}$ (Bán kính ngoài $R_{\text{out}} = 400\text{ mm}$).
   * Độ dày thành sắt: $8\text{ mm} = 0.8\text{ cm}$ (Bán kính trong $R_{\text{in}} = 392\text{ mm}$).
 * **Vỏ áo ngoài (Áo giữ nhiệt)**:
-  * Chiều dài: $1000\text{ mm} = 1\text{ m}$.
+  * Chiều dài: $1000\text{ mm} = 1\text{ m}$ ($Y \in [-499.5\text{ mm}, +500.5\text{ mm}]$).
   * Bán kính trong: $R_{\text{ao\_in}} = 410\text{ mm}$ (Tạo đệm không khí $10\text{ mm} = 1\text{ cm}$ so với vỏ trong).
   * Độ dày vỏ ngoài: $5\text{ mm} = 0.5\text{ cm}$ (Bán kính ngoài $R_{\text{ao\_out}} = 415\text{ mm} \rightarrow \varnothing 830\text{ mm} = 83\text{ cm}$).
 * **Tác dụng nhiệt động**: Lớp không khí tĩnh $1\text{ cm}$ giữa 2 vỏ hoạt động như một lớp đệm nhiệt, ngăn chặn táp lửa trực tiếp từ ngọn lửa củi, chống cháy xém hạt nông sản và giữ nhiệt đối lưu cực tốt.
 
 ---
 
-## 2. Cây Láp Trục Chính (Trục Bậc Xuyên Tâm)
-* **Chiều dài tổng thể**: $1200\text{ mm} = 1.2\text{ m}$.
-* **Thân trục giữa**: $\varnothing 65\text{ mm}$ (Bán kính $R = 32.5\text{ mm}$), dài $1000\text{ mm}$ nằm trọn trong trống.
-* **Hai đầu tiện bậc lắp bạc đạn & puly**: $\varnothing 60\text{ mm}$, mỗi đầu dài $100\text{ mm} = 10\text{ cm}$ nhô ra ngoài 2 mặt máy (nhô ra $82\text{ mm}$ sau khi trừ độ dày mặt máy $18\text{ mm}$).
+## 1b. Tấm Sắt Tròn Đáy Sau Trống Rang (Hàn Âm Lọt Lòng Vòng Tròn Nhỏ Phi 78.4cm)
+* **Ý tưởng thiết kế (Trường hợp 2 được chọn)**: Bịt kín hoàn toàn đuôi sau của **Vòng tròn nhỏ bên trong** (`Trong_Hinh_Tru_Sat`) để hạt cà phê không bị rơi ra ngoài buồng đốt trong quá trình rang, đồng thời giữ nguyên vẹn luồng đệm khí cách nhiệt $1\text{ cm}$ và khoảng hở sau $9.95\text{ cm}$.
+* **Quy cách hình học**:
+  * **Đường kính ngoài đĩa**: $\varnothing 784.0\text{ mm} = 78.4\text{ cm}$ ($R = 392.0\text{ mm}$), khớp chính xác với đường kính lọt lòng của vỏ trống trong.
+  * **Độ dày thép tấm**: **$8.0\text{ mm} = 0.8\text{ cm}$** (đồng bộ chiều dày thành vỏ trống, chống cong vênh nhiệt tối đa).
+  * **Lỗ cốt trục xuyên tâm**: $\varnothing 65.0\text{ mm}$ ($R = 32.5\text{ mm}$), xỏ khít vừa vặn qua thân cây láp chính $\varnothing 65\text{ mm}$.
+* **Vị trí bố trí dọc trục Y**:
+  * Đặt thụt vào trong lòng trống **$5.0\text{ mm}$** so với mép đuôi trống ($Y = +500.5\text{ mm}$):
+    * Mặt ngoài đĩa: $Y = +495.5\text{ mm}$.
+    * Mặt trong đĩa: $Y = +487.5\text{ mm}$.
+  * Mép ngoài ống trống nhô ra $5\text{ mm}$ tạo gờ bảo vệ và rãnh vát chữ V tự nhiên cho đường hàn góc âm.
+  * Khoảng hở an toàn đến chóp sau 5 cánh đảo ngoài ($Y = +484.19\text{ mm}$): **$3.31\text{ mm}$** (vận hành quay mượt mà, không va chạm).
+* **Kết cấu mối hàn ngấu chịu lực ("Hàn sao cho vừa đủ")**:
+  * **Vành hàn cổ trục**: Fillet collar dày $4\text{ mm}$ quanh cốt láp $\varnothing 65\text{ mm}$ ($R = 32.5 \to 38.0\text{ mm}$, $Y = 495.5 \to 499.5\text{ mm}$).
+  * **Vành hàn mép chu vi trong**: Fillet seam dày $4\text{ mm}$ bám dọc chu vi trong ống trống ($R = 386.0 \to 392.0\text{ mm}$, $Y = 495.5 \to 499.5\text{ mm}$).
+* **Bảo toàn khoảng hở vận hành**:
+  * Mép đuôi ống trống vẫn kết thúc tại $Y = +500.5\text{ mm}$.
+  * Khoảng hở từ đuôi trống đến mặt trong Mặt Máy Sau ($Y = +600.0\text{ mm}$) giữ **chính xác $99.5\text{ mm} = 9.95\text{ cm}$** theo đúng tiêu chuẩn thông gió lò củi.
+* **Đồng bộ chuyển động**: Đĩa đáy sau được hàn dính liền vào cây láp và vỏ trống nên quay đồng bộ 100% khi đảo chiều và đổi tốc độ RPM.
+
+---
+
+## 2. Cây Láp Trục Chính (Trục Bậc Xuyên Tâm Dài 1.3m)
+* **Chiều dài tổng thể**: **$1300\text{ mm} = 1.3\text{ m}$** (tăng $10\text{ cm}$ đồng bộ với khoảng cách 2 mặt máy).
+* **Thân trục giữa**: $\varnothing 65\text{ mm}$ (Bán kính $R = 32.5\text{ mm}$), dài **$1100\text{ mm} = 110\text{ cm}$** ($Y \in [-500.0, +600.0\text{ mm}]$) xuyên suốt buồng rang giữa 2 mặt máy.
+* **Hai đầu tiện bậc lắp bạc đạn & puly**: $\varnothing 60\text{ mm}$, mỗi đầu dài $100\text{ mm} = 10\text{ cm}$:
+  * Đầu trước: $Y \in [-600.0, -500.0\text{ mm}]$, nhô ra ngoài Mặt Máy Trước đúng **$82\text{ mm}$**.
+  * Đầu sau: $Y \in [+600.0, +700.0\text{ mm}]$, nhô ra ngoài Mặt Máy Sau đúng **$82\text{ mm}$** đối xứng hoàn hảo.
 
 ---
 
@@ -55,8 +82,15 @@
 
 ---
 
-## 5. Hai Mặt Máy Trước & Sau (Sắt Tấm Dày 1.8cm)
+## 5. Hai Mặt Máy Trước & Sau (Sắt Tấm Dày 1.8cm, Khoảng Cách Lọt Lòng 110cm)
 * **Vật liệu**: Sắt tấm kết cấu dày **$1.8\text{ cm} = 18\text{ mm}$** gia công CNC chính xác.
+* **Vị trí bố trí dọc trục Y**:
+  * **Mặt Máy Trước**: Tọa độ $Y \in [-518.0\text{ mm}, -500.0\text{ mm}]$ (mặt trong tại $Y = -500.0\text{ mm}$).
+  * **Mặt Máy Sau**: Tọa độ $Y \in [+600.0\text{ mm}, +618.0\text{ mm}]$ (mặt trong tại $Y = +600.0\text{ mm}$).
+  * **Khoảng cách lọt lòng giữa 2 mặt máy**: Đúng **$1100\text{ mm} = 110\text{ cm} = 1.1\text{ m}$** (tăng thêm đúng $10\text{ cm}$ theo yêu cầu).
+  * **Phân bố khoảng hở trống bên trong**: Trống dài $100\text{ cm}$ đặt tại $Y = -499.5 \to +500.5\text{ mm}$:
+    * Đầu trước áp sát mặt máy trước, chừa khe hở **$0.5\text{ mm}$** chống cạ quẹt khi quay.
+    * Mặt sau còn lại đúng **$99.5\text{ mm} = 9.95\text{ cm}$** tạo luồng đối lưu khí nhiệt tuyệt hảo.
 * **Hình dáng biên dạng chung**:
   * Phía trên: Cung tròn bán kính $R = 480\text{ mm}$ ($\varnothing 960\text{ mm} = 96\text{ cm}$) bao trọn vỏ ngoài trống ($R = 415\text{ mm}$).
   * Eo thắt: Thắt cong vào tại cao độ $Z = -308.5\text{ mm}$ với bề rộng $73.5\text{ cm}$ ($X = \pm 367.7\text{ mm}$).
@@ -65,7 +99,7 @@
 * **Kết cấu chân đồng bộ 2 Mặt Máy Trước & Sau (Phương án C.2 - Vát xéo ra biên + Gờ chân đứng 5.5cm)**:
   * Từ điểm eo thắt ($X = \pm 367.7\text{ mm}, Z = -308.5\text{ mm}$), hai cạnh bên vát chéo một mạch xuôi ra biên ngoài $X = \pm 550\text{ mm}$ tại cao độ $Z = -795\text{ mm}$ (cách mặt sàn/chân máy đúng **$5.5\text{ cm} = 55\text{ mm}$**).
   * Từ điểm $(X = \pm 550\text{ mm}, Z = -795\text{ mm})$, đường biên **bẻ góc vuông thẳng đứng xuống sàn** $Z = -850\text{ mm}$, tạo thành gờ chân đứng cao đúng **$5.5\text{ cm} = 55\text{ mm}$**.
-  * Đáy dưới phẳng rộng **$1.1\text{ m} = 1100\text{ mm}$** ($X = \pm 550\text{ mm}$) tiếp xúc phẳng hoàn toàn và êm khít với bệ chân đế máy $111\text{ cm} \times 104.6\text{ cm} \times 0.5\text{ cm}$.
+  * Đáy dưới phẳng rộng **$1.1\text{ m} = 1100\text{ mm}$** ($X = \pm 550\text{ mm}$) tiếp xúc phẳng hoàn toàn và êm khít với bệ chân đế máy $111\text{ cm} \times 114.6\text{ cm} \times 0.5\text{ cm}$.
   * Tạo vẻ ngoài đồng bộ, khỏe khoắn, hiện đại và tạo điểm tựa gờ đứng vững chắc cho việc bắt bu-lông/hàn định vị khung bệ máy.
 
 ---
@@ -145,22 +179,23 @@
 ---
 
 ## 8. Cửa Buồng Đốt Mặt Sau & 2 Bản Lề Cối Mở 120 Độ
-* **Lỗ khoét mặt máy sau**: Kích thước dài **$50\text{ cm}$** $\times$ cao **$30\text{ cm}$** ($X \in [-250, +250\text{ mm}]$, $Z \in [-800, -500\text{ mm}]$), cách chân máy đúng **$5\text{ cm}$**.
-* **Cánh cửa sắt 18mm**: Sử dụng lại chính phôi sắt tấm dày $1.8\text{ cm}$ cắt ra (kích thước $49.8\text{ cm} \times 29.8\text{ cm}$, khe cắt CNC $1\text{ mm}$).
-* **2 Bản lề cối chịu lực**: Hàn cố định bên trái mép cửa (nhìn từ sau: $X = +249.5\text{ mm}, Y = +518\text{ mm}$), cối phi $20\text{ mm}$, đệm long đền đồng.
+* **Lỗ khoét mặt máy sau**: Kích thước dài **$50\text{ cm}$** $\times$ cao **$30\text{ cm}$** ($X \in [-250, +250\text{ mm}]$, $Z \in [-800, -500\text{ mm}]$), cách chân máy đúng **$5\text{ cm}$**, đặt tại mặt máy sau mới ($Y = +600 \to +618\text{ mm}$).
+* **Cánh cửa sắt 18mm**: Sử dụng lại chính phôi sắt tấm dày $1.8\text{ cm}$ cắt ra (kích thước $49.8\text{ cm} \times 29.8\text{ cm}$, khe cắt CNC $1\text{ mm}$, đặt tại $Y = +600 \to +618\text{ mm}$).
+* **2 Bản lề cối chịu lực**: Hàn cố định bên trái mép cửa (nhìn từ sau: $X = +249.5\text{ mm}, Y = +618\text{ mm}$), cối phi $20\text{ mm}$, đệm long đền đồng, tâm xoay tại $Y = +626\text{ mm}$.
 * **Góc mở cửa**: **Mở rộng $120^\circ$ về bên trái**, xoay áp sát sườn máy, giải phóng $100\%$ miệng buồng đốt cho thao tác nạp củi lớn và cào tro xỉ trơn tru.
 * **Tay khóa**: Then gài dạng chữ L (L-handle) bố trí bên phải cửa kèm núm xoay cách nhiệt.
 
 ---
 
-## 9. Buồng Đốt Củi Gạch Sa Mốt Nằm Gọn Dưới Trống
+## 9. Buồng Đốt Củi Gạch Sa Mốt Nằm Gọn Dưới Trống (Dài 110cm)
 * **Quy cách viên gạch sa mốt**: $30\text{ cm} \times 10\text{ cm} \times 5\text{ cm}$ (Dài $\times$ Rộng $\times$ Dày), mạch vữa xây chịu nhiệt $1.5\text{ mm}$.
 * **Sàn đáy buồng đốt**:
   * Lát 7 hàng gạch nằm dày **$5\text{ cm}$** ($Z = -850 \rightarrow -800\text{ mm}$).
-  * Kích thước sàn: Rộng **$70\text{ cm}$** ($X = \pm 350\text{ mm}$), Dài **$1\text{ m}$** ($Y = \pm 500\text{ mm}$).
+  * Kích thước sàn: Rộng **$70\text{ cm}$** ($X = \pm 350\text{ mm}$), Dài **$110\text{ cm} = 1.1\text{ m}$** ($Y \in [-500.0, +600.0\text{ mm}]$) ôm kín khít từ Mặt Máy Trước đến Mặt Máy Sau.
   * Bằng phẳng khít ngang ngưỡng mép dưới cửa sau ($Z = -800\text{ mm}$).
 * **Hai vách hông lò**:
   * Bao **đúng 1 lớp gạch nằm** dày **$10\text{ cm}$** mỗi bên: Vách trái ($X = -350 \rightarrow -250\text{ mm}$), Vách phải ($X = +250 \rightarrow +350\text{ mm}$).
+  * Chiều dài vách hông: **$110\text{ cm}$** ($Y = -500 \rightarrow +600\text{ mm}$).
   * Lòng trong thông thủy buồng đốt: Rộng đúng **$50\text{ cm}$** ($X = \pm 250\text{ mm}$) khớp chuẩn với cửa sau $50\text{ cm}$.
   * Tổng bề rộng lò gạch phủ bì: Đúng **$70\text{ cm}$**, lọt hoàn toàn trong eo thắt mặt máy ($73.5\text{ cm}$), dư an toàn $1.8\text{ cm}$ mỗi bên $\rightarrow$ **Nằm gọn lọt thỏm dưới gầm trống, không hề bị lòi ra ngoài**.
   * Chiều cao vách: Xây **9 hàng gạch** ($45\text{ cm}$ từ sàn lò, tổng cao $50\text{ cm}$ từ chân máy) lên tới cao độ **$Z = -350\text{ mm}$ vừa chạm tới đáy trống**.
@@ -169,10 +204,10 @@
 
 ---
 
-## 10. Chân Đế Máy Hình Chữ Nhật (Sắt Tấm Dày 0.5cm)
+## 10. Chân Đế Máy Hình Chữ Nhật (Sắt Tấm Dày 0.5cm, 111cm x 114.6cm)
 * **Vật liệu**: Thép tấm dày **$0.5\text{ cm} = 5\text{ mm}$**.
-* **Kích thước mặt bằng**: **$1110\text{ mm} \times 1046\text{ mm}$** ($111\text{ cm} \times 104.6\text{ cm}$).
-* **Độ dư tiêu chuẩn**: Dư mỗi bên trước sau đúng **$0.5\text{ cm} = 5\text{ mm}$** và trái phải đúng **$0.5\text{ cm} = 5\text{ mm}$**.
+* **Kích thước mặt bằng**: **$1110\text{ mm} \times 1146\text{ mm}$** ($111\text{ cm} \times 114.6\text{ cm}$).
+* **Độ dư tiêu chuẩn**: Dư mỗi bên trước sau đúng **$0.5\text{ cm} = 5\text{ mm}$** ($Y \in [-523.0, +623.0\text{ mm}]$ so với 2 mặt máy tại $Y = -518\text{ mm}$ và $Y = +618\text{ mm}$) và trái phải đúng **$0.5\text{ cm} = 5\text{ mm}$** ($X \in [-555.0, +555.0\text{ mm}]$).
 * **Vị trí**: Đặt phẳng dưới mặt sàn xưởng tại $Z = -855\text{ mm} \rightarrow -850\text{ mm}$, đỡ trọn chân 2 mặt máy và lò gạch, liên kết chống rung lật tuyệt đối.
 
 ---
