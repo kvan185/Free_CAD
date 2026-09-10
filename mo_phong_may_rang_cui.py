@@ -890,20 +890,20 @@ def tao_mo_hinh_chi_tiet(doc):
     )
     hinh_mat_truoc = hinh_mat_truoc.cut(cutter_lo_nap_truoc)
 
-    # Khoét 4 lỗ phi 15mm bắt bu-lông M14 của 4 cây láp giằng cố định 2 mặt máy
+    # Tọa độ 4 vị trí giằng 2 mặt máy:
+    # 2 Cây trên: X = ±315, Z = +315 (R = 445.5mm, góc 45° và 135°)
+    # 2 Cây dưới: X = ±345, Z = -290 (Ngay chỗ cuối của đường tròn, góc thắt eo -40°)
+    # Lưu ý: Mặt Máy Trước giữ phẳng đặc không khoét lỗ (hàn ốc áp sát mặt trong tại Y = -500mm)
     pts_tie_rods = [
         (+315.0, +315.0),   # Cây trên - phải (Top-Right: R = 445.5mm, góc 45°)
         (-315.0, +315.0),   # Cây trên - trái (Top-Left: R = 445.5mm, góc 135°)
-        (+400.0, -350.0),   # Cây dưới - phải (Bottom-Right: vai chân vát 18mm)
-        (-400.0, -350.0)    # Cây dưới - trái (Bottom-Left: vai chân vát 18mm)
+        (+345.0, -290.0),   # Cây dưới - phải (Bottom-Right: ngay chỗ cuối của đường tròn, góc thắt eo -40°)
+        (-345.0, -290.0)    # Cây dưới - trái (Bottom-Left: ngay chỗ cuối của đường tròn, góc thắt eo -40°)
     ]
-    for xr, zr in pts_tie_rods:
-        hole_tie = Part.makeCylinder(7.5, T_mat + 10.0, App.Vector(xr, Y_mat - 5.0, zr), App.Vector(0, 1, 0))
-        hinh_mat_truoc = hinh_mat_truoc.cut(hole_tie)
 
     obj_mat_truoc = doc.addObject("Part::Feature", "Mat_May_Truoc_Ga_Trong_18mm")
     obj_mat_truoc.Shape = hinh_mat_truoc
-    obj_mat_truoc.Label = "6. Mặt Máy Trước Gá Trống (Sắt 1.8cm, D96cm, Chân Vát Gờ Đứng 5.5cm Đáy 1.1m, Lỗ D65mm, Lỗ Nạp 20x30cm, Miệng Xả 50cm, Lỗ Thăm D30mm, 4 Lỗ Láp Giằng D15mm)"
+    obj_mat_truoc.Label = "6. Mặt Máy Trước Gá Trống (Sắt 1.8cm, D96cm, Chân Vát Gờ Đứng 5.5cm Đáy 1.1m, Lỗ D65mm, Lỗ Nạp 20x30cm, Miệng Xả 50cm, Lỗ Thăm D30mm - Mặt Tiền Liền Khối)"
     # Màu xám xanh thép công nghiệp dày dặn
     gan_mau(obj_mat_truoc, (0.28, 0.35, 0.45), line_color=(0.10, 0.15, 0.25), line_width=2.0)
 
@@ -1328,59 +1328,92 @@ def tao_mo_hinh_chi_tiet(doc):
     )
     hinh_mat_sau = hinh_mat_sau.cut(cutter_lo_sau)
 
-    # Khoét 4 lỗ phi 15mm bắt bu-lông M14 của 4 cây láp giằng cố định 2 mặt máy
+    # Khoét 4 lỗ phi 17.5mm cho 4 cây láp giằng M16 xỏ qua mặt máy sau
     for xr, zr in pts_tie_rods:
-        hole_tie_s = Part.makeCylinder(7.5, T_mat + 10.0, App.Vector(xr, Y_mat_sau - 5.0, zr), App.Vector(0, 1, 0))
+        hole_tie_s = Part.makeCylinder(8.75, T_mat + 10.0, App.Vector(xr, Y_mat_sau - 5.0, zr), App.Vector(0, 1, 0))
         hinh_mat_sau = hinh_mat_sau.cut(hole_tie_s)
 
     obj_mat_sau = doc.addObject("Part::Feature", "Mat_May_Sau_Ga_Trong_18mm")
     obj_mat_sau.Shape = hinh_mat_sau
-    obj_mat_sau.Label = "7. Mặt Máy Sau (Sắt 1.8cm, Chân Vát Gờ Đứng 5.5cm, Lỗ Cốt D65mm, Cửa Lò 50x30cm, 4 Lỗ Láp Giằng D15mm)"
+    obj_mat_sau.Label = "7. Mặt Máy Sau (Sắt 1.8cm, Chân Vát Gờ Đứng 5.5cm, Lỗ Cốt D65mm, Cửa Lò 50x30cm, 4 Lỗ Láp Giằng D17.5mm)"
     gan_mau(obj_mat_sau, (0.28, 0.35, 0.45), line_color=(0.10, 0.15, 0.25), line_width=2.0)
 
     # -------------------------------------------------------------
-    # 7c. 4 CÂY LÁP GIẰNG TRÒN PHI 30MM KHOÉT REN TRONG M14 Ở 2 ĐẦU CỐ ĐỊNH 2 MẶT MÁY
-    #     - Chiều dài lọt lòng chuẩn cữ: L = 1100.0mm (từ Y = -500.0mm đến Y = +600.0mm)
-    #     - Thân thép tròn đặc C45 phi 30mm, 2 đầu khoét taro ren M14x2.0 sâu 40mm
-    #     - 8 Bu-lông lục giác M14x40mm kèm long đền vênh & phẳng siết ép 2 mặt máy sắt 18mm
+    # 7c. HỆ THỐNG 4 CÂY LÁP GIẰNG M16 CỐ ĐỊNH 2 MẶT MÁY (CƠ CẤU HÀN ỐC MẶT TRƯỚC + 2 TÁN KÉP MẶT SAU)
+    #     - Mặt máy trước: Không khoét lỗ ra mặt tiền, 4 con ốc M16 áp sát mặt trong tại Y = -500mm và hàn chết.
+    #     - Cây láp giằng: Thép C45 tròn đặc phi 16mm dài 1155mm, xỏ từ mặt sau qua, vặn vào ốc hàn mặt trước.
+    #     - Mặt máy sau: Khoét 4 lỗ phi 17.5mm xỏ cây láp qua, dùng 2 con ốc M16 (tán kép) + long đền siết khóa chống rung.
     # -------------------------------------------------------------
-    R_rod = 15.0      # Phi 30mm -> R = 15mm
-    L_rod = 1100.0    # 1100mm lọt lòng giữa 2 mặt máy
-    Y_start_rod = -500.0
+    R_rod = 8.0          # Láp thép tròn phi 16mm (R = 8mm), ren M16x2.0
+    L_rod_total = 1155.0 # Tổng chiều dài: 1100 (lọt lòng) + 18 (mặt sau) + 37 (nhô ngoài bắt 2 tán)
+    Y_front_mat = -500.0 # Mặt trong của Mặt Máy Trước
+    Y_rear_mat = +600.0  # Mặt trong của Mặt Máy Sau
+    Y_rear_out = +618.0  # Mặt ngoài của Mặt Máy Sau
 
     solids_tie_rods = []
-    solids_bolts_washers = []
+    solids_welded_nuts = []
+    solids_rear_double_nuts = []
+
+    s_nut = 24.0         # Cỡ cờ lê lục giác M16 (S = 24mm)
+    r_circ_nut = s_nut / math.sqrt(3.0)  # Bán kính đường tròn ngoại tiếp lục giác = 13.856mm
+    h_nut = 13.0         # Chiều dày đai ốc M16 tiêu chuẩn = 13mm
 
     for xr, zr in pts_tie_rods:
-        # Thân cây láp tròn phi 30mm
-        rod_cyl = Part.makeCylinder(R_rod, L_rod, App.Vector(xr, Y_start_rod, zr), App.Vector(0, 1, 0))
-        # Khoét lỗ ren M14 sâu 40mm ở 2 đầu
-        hole_front = Part.makeCylinder(6.0, 40.0, App.Vector(xr, Y_start_rod - 1.0, zr), App.Vector(0, 1, 0))
-        hole_rear = Part.makeCylinder(6.0, 40.0, App.Vector(xr, Y_start_rod + L_rod - 39.0, zr), App.Vector(0, 1, 0))
-        rod_solid = rod_cyl.cut(hole_front).cut(hole_rear)
+        # 1. Thân cây láp tròn phi 16mm kéo dài từ Y = -500.0 đến Y = +655.0mm (Dài 1155mm)
+        rod_cyl = Part.makeCylinder(R_rod, L_rod_total, App.Vector(xr, Y_front_mat, zr), App.Vector(0, 1, 0))
+        # Vát mép đầu đuôi C1.5x45°
+        chamfer_tail = Part.makeCone(R_rod - 1.5, R_rod + 2.0, 3.0, App.Vector(xr, Y_front_mat + L_rod_total - 1.5, zr), App.Vector(0, 1, 0))
+        rod_solid = rod_cyl.cut(chamfer_tail)
         solids_tie_rods.append(rod_solid)
 
-        # Bu-lông M14 & long đền ở Mặt Máy Trước (Y = -518mm)
-        head_f = Part.makeCylinder(12.7, 8.8, App.Vector(xr, -518.0 - 8.8 - 3.0, zr), App.Vector(0, 1, 0))
-        washer_f = Part.makeCylinder(14.0, 3.0, App.Vector(xr, -518.0 - 3.0, zr), App.Vector(0, 1, 0))
-        shank_f = Part.makeCylinder(7.0, 40.0, App.Vector(xr, -518.0, zr), App.Vector(0, 1, 0))
-        solids_bolts_washers.append(head_f.fuse(washer_f).fuse(shank_f))
+        # 2. Con ốc M16 áp sát mặt trong Mặt Máy Trước và hàn chết (Y từ -500 đến -487mm)
+        pts_hex_f = []
+        for i in range(6):
+            a = math.radians(30.0 + i * 60.0)
+            pts_hex_f.append(App.Vector(xr + r_circ_nut * math.cos(a), Y_front_mat, zr + r_circ_nut * math.sin(a)))
+        pts_hex_f.append(pts_hex_f[0])
+        nut_f_body = Part.Face(Part.makePolygon(pts_hex_f)).extrude(App.Vector(0, h_nut, 0))
+        # Vành mối hàn góc chu vi đai ốc vào tấm sắt mặt trước (dày 3mm, loe 3mm)
+        weld_ring = Part.makeCylinder(r_circ_nut + 3.0, 3.0, App.Vector(xr, Y_front_mat, zr), App.Vector(0, 1, 0))
+        solids_welded_nuts.append(nut_f_body.fuse(weld_ring))
 
-        # Bu-lông M14 & long đền ở Mặt Máy Sau (Y = +618mm)
-        head_r = Part.makeCylinder(12.7, 8.8, App.Vector(xr, 618.0 + 3.0, zr), App.Vector(0, 1, 0))
-        washer_r = Part.makeCylinder(14.0, 3.0, App.Vector(xr, 618.0, zr), App.Vector(0, 1, 0))
-        shank_r = Part.makeCylinder(7.0, 40.0, App.Vector(xr, 618.0 - 40.0, zr), App.Vector(0, 1, 0))
-        solids_bolts_washers.append(head_r.fuse(washer_r).fuse(shank_r))
+        # 3. Phía sau Mặt Máy Sau (từ Y = +618mm trở ra): 1 Long đền phẳng + 2 Con ốc (Tán kép M16)
+        washer_r = Part.makeCylinder(16.0, 3.0, App.Vector(xr, Y_rear_out, zr), App.Vector(0, 1, 0))
+        hole_w = Part.makeCylinder(R_rod + 0.5, 5.0, App.Vector(xr, Y_rear_out - 1.0, zr), App.Vector(0, 1, 0))
+        washer_solid = washer_r.cut(hole_w)
 
-    obj_tie_rods = doc.addObject("Part::Feature", "4_Cay_Lap_Giang_Khoet_Ren_2_Dau_Phi30")
+        # Tán 1 (Đai ốc chính M16): Y từ +621 đến +634mm
+        pts_hex_r1 = []
+        for i in range(6):
+            a = math.radians(30.0 + i * 60.0)
+            pts_hex_r1.append(App.Vector(xr + r_circ_nut * math.cos(a), Y_rear_out + 3.0, zr + r_circ_nut * math.sin(a)))
+        pts_hex_r1.append(pts_hex_r1[0])
+        nut_r1 = Part.Face(Part.makePolygon(pts_hex_r1)).extrude(App.Vector(0, h_nut, 0))
+
+        # Tán 2 (Đai ốc hãm / Lock nut M16): Y từ +634 đến +647mm
+        pts_hex_r2 = []
+        for i in range(6):
+            a = math.radians(60.0 + i * 60.0)  # Xoay góc 30° lệch tán 1 tạo hiệu ứng chân thực
+            pts_hex_r2.append(App.Vector(xr + r_circ_nut * math.cos(a), Y_rear_out + 3.0 + h_nut, zr + r_circ_nut * math.sin(a)))
+        pts_hex_r2.append(pts_hex_r2[0])
+        nut_r2 = Part.Face(Part.makePolygon(pts_hex_r2)).extrude(App.Vector(0, h_nut, 0))
+
+        solids_rear_double_nuts.append(washer_solid.fuse(nut_r1).fuse(nut_r2))
+
+    obj_tie_rods = doc.addObject("Part::Feature", "4_Cay_Lap_Giang_Ren_Ngoai_Phi16_Dai_1155mm")
     obj_tie_rods.Shape = Part.makeCompound(solids_tie_rods)
-    obj_tie_rods.Label = "7c1. 4 Cây Láp Giằng Phi 30mm Dài 110cm Khoét Ren M14 Hai Đầu Cố Định 2 Mặt Máy"
+    obj_tie_rods.Label = "7c1. 4 Cây Láp Giằng Phi 16mm Dài 1155mm Tiện Ren M16 Hai Đầu Cố Định 2 Mặt Máy"
     gan_mau(obj_tie_rods, (0.85, 0.88, 0.92), line_color=(0.15, 0.20, 0.25), line_width=1.6)
 
-    obj_tie_bolts = doc.addObject("Part::Feature", "8_BuLong_M14_Va_LongDen_CoDinh_2MatMay")
-    obj_tie_bolts.Shape = Part.makeCompound(solids_bolts_washers)
-    obj_tie_bolts.Label = "7c2. 8 Bu-lông M14x40mm & Long Đền Vênh Ép Cữ Hai Mặt Máy Vào 4 Cây Láp"
-    gan_mau(obj_tie_bolts, (0.85, 0.70, 0.20), line_color=(0.40, 0.30, 0.05), line_width=1.2)
+    obj_front_nuts = doc.addObject("Part::Feature", "4_DaiOc_M16_Han_Mat_May_Truoc")
+    obj_front_nuts.Shape = Part.makeCompound(solids_welded_nuts)
+    obj_front_nuts.Label = "7c2. 4 Đai Ốc M16 Áp Sát & Hàn Dính Chết Vào Mặt Máy Trước (Mặt Tiền Liền Khối)"
+    gan_mau(obj_front_nuts, (0.85, 0.70, 0.20), line_color=(0.40, 0.30, 0.05), line_width=1.2)
+
+    obj_rear_nuts = doc.addObject("Part::Feature", "8_DaiOc_Kep_M16_Va_LongDen_Khoa_Mat_Sau")
+    obj_rear_nuts.Shape = Part.makeCompound(solids_rear_double_nuts)
+    obj_rear_nuts.Label = "7c3. 8 Đai Ốc M16 (2 Tán Kép/Cây) & Long Đền Siết Khóa Cố Định Mặt Máy Sau"
+    gan_mau(obj_rear_nuts, (0.85, 0.70, 0.20), line_color=(0.40, 0.30, 0.05), line_width=1.2)
 
     # 7b. MÁNG NẠP LIỆU DẪN HƯỚNG INOX 304 CHỐNG RỚT HẠT (MẶT TRƯỚC VÀO SÂU TRỐNG 6CM, ĐỘ DỐC CỰC ĐẠI 50.6°):
     # - Vượt qua khe hở quay 2mm giữa mép trống và mặt máy trước tĩnh (Y = -500mm)
