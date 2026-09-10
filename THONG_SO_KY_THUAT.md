@@ -317,54 +317,62 @@
 
 ---
 
-## 15. Bộ Chỉnh Gối Bi Trục Phi 60mm (Trường Hợp 1A: Cụm Hộp Trượt Bu-lông Tăng Đơ & Tab 3 Mô Hình Rời / Lắp Ráp)
+## 15. Bộ Chỉnh Gối Bi Trục Phi 60mm (3 Thiết Kế Gang Bích 4 Ốc Chuẩn Công Nghiệp)
 
-### 15.1. Khái Niệm & Vai Trò Của Bộ Chỉnh Máy Rang
-* **Bộ chỉnh máy rang** là cơ cấu định vị cơ khí chính xác dọc theo phương trục quay ($Y$), giữ nhiệm vụ sống còn trong hệ thống vận hành máy rang công nghiệp:
+### 15.1. Khái Niệm & Vai Trò Thực Tế Của Bộ Chỉnh Máy Rang
+* **Bộ chỉnh máy rang** là cụm cơ cấu định vị cơ khí chính xác dọc theo trục quay ($Y$), bắt trực tiếp vào mặt máy trước/sau bằng 4 bu-lông lớn:
   1. **Căn chỉnh khe hở nhiệt độ & chống cạ quẹt**: Giữ khe hở đầu trước giữa vành trống và mặt máy trước đúng chuẩn **$0.5\text{ mm}$**, không để trống bị bó kẹt khi giãn nở vì nhiệt ở $250^\circ\text{C} - 300^\circ\text{C}$ và triệt tiêu nguy cơ cạ kim loại làm mòn thành trống hoặc rớt hạt cà phê.
-  2. **Bù trừ độ rơ dọc trục & căn chỉnh đồng trục**: Khi lắp ráp thực tế, dung sai cơ khí của mối hàn bệ máy và thân vỏ có thể sai lệch. Bộ chỉnh cho phép người thợ siết nhả bu-lông tăng đơ để dịch chuyển ổ bi tịnh tiến mượt mà $\pm 15\text{ mm}$ (tổng hành trình $30\text{ mm}$) dọc trục.
+  2. **Bù trừ độ rơ dọc trục & căn chỉnh đồng trục**: Khi lắp ráp thực tế, dung sai cơ khí của mối hàn bệ máy và thân vỏ có thể sai lệch. Bộ chỉnh cho phép người thợ xoay tăng ren hoặc siết nhả bu-lông để dịch chuyển ổ bi tịnh tiến mượt mà $\pm 15\text{ mm}$ dọc trục.
   3. **Đỡ tải trọng tâm trống rang**: Chịu toàn bộ tải trọng tĩnh của trống ($>150\text{ kg}$) cộng thêm $30 - 60\text{ kg}$ hạt cà phê khi rang và lực quán tính quay $40\text{ RPM}$.
+  4. **Kín bụi tuyệt đối**: Bịt kín đầu cốt trục láp $\varnothing 60\text{ mm}$, không cho vỏ lụa, khói và bụi cà phê lọt vào bên trong làm kẹt rơ-le hoặc hỏng bạc đạn.
 
 ---
 
-### 15.2. Kết Cấu Kỹ Thuật 7 Chi Tiết Cụm Bộ Chỉnh 1A
-Cụm được thiết kế theo kết cấu thép hàn kết hợp gia công cơ khí hạng nặng:
+### 15.2. So Sánh Chi Tiết 3 Thiết Kế Bộ Chỉnh Mới
 
-| STT | Tên Chi Tiết | Vật Liệu & Quy Cách Chế Tạo | Kích Thước Hình Học (mm) | Chức Năng |
-| :--- | :--- | :--- | :--- | :--- |
-| **1** | **Tấm đế trượt có ray** | Thép tấm kết cấu CT3 dày $16\text{ mm}$ | $220 \times 160 \times 16\text{ mm}$ | Gá cố định vào mặt máy; 2 ray vuông $15\times 15\text{ mm}$ dẫn hướng hộp trượt không bị lắc ngang. |
-| **2** | **Hộp trượt đỡ gối bi** | Thép hàn liên kết dày $12\text{ mm}$ | $180 \times 150 \times 60\text{ mm}$ | Đỡ ổ bi UC212; 4 rãnh trượt ô van $30\times 18\text{ mm}$ cho phép tịnh tiến dọc $\pm 15\text{ mm}$. |
-| **3** | **Tai ren tỳ tăng đơ** | Thép tấm dày $16\text{ mm}$, taro ren suốt | $80 \times 50 \times 16\text{ mm}$, ren M16 | Hàn cứng vuông góc trên tấm đế trượt; điểm tỳ ren cho vít me tăng đơ. |
-| **4** | **Bu-lông tăng đơ & tán hãm**| Thép hợp kim cấp bền 8.8 mạ kẽm | M16 $\times$ dài $80\text{ mm}$ + đệm tỳ $\varnothing 28\text{ mm}$ | Vặn tỳ vào thành hộp trượt để đẩy hoặc hãm vị trí; đai ốc M16 khóa chết sau khi căn chỉnh. |
-| **5** | **Gối bi đỡ trục UC212** | Ổ lăn cầu tự lựa 2 dãy bi | Ca trong $\varnothing 60\text{ mm}$, ca ngoài $\varnothing 140\text{ mm}$ | Đỡ đầu trục $\varnothing 60\text{ mm}$; 8 viên bi cầu chịu tải hướng tâm cao; có phớt chắn mỡ 2 đầu. |
-| **6** | **Đoạn trục láp mẫu & rãnh then** | Thép tròn chế tạo C45 | Cốt $\varnothing 60\text{ mm} \times 140\text{ mm}$, then $18\times 11\text{ mm}$ | Đoạn trục mẫu mô phỏng liên kết chặt chẽ với ổ bi và then cavet truyền động puly. |
-| **7** | **Bu-lông khóa vị trí (4 cái)**| Thép 8.8 lục giác chìm/ngoài | 4 bu-lông M16 $\times$ dài $45\text{ mm}$ + đệm vênh | Xỏ qua 4 rãnh trượt ô van kẹp chặt hộp trượt vào tấm đế sau khi tăng chỉnh đạt yêu cầu. |
+| Tiêu Chí Kỹ Thuật | ⭐ Thiết Kế 1: Kiểu Phương Ân (Chuẩn Thực Tế) | ⚡ Thiết Kế 2: Bích Gang Push-Pull 2 Chiều | 🎯 Thiết Kế 3: Cartridge Vô-Lăng Micromet |
+| :--- | :--- | :--- | :--- |
+| **Bản vẽ thực tế** | Chuẩn máy Phương Ân / San Franciscan | Chuẩn cơ khí chế tạo máy nặng | Chuẩn máy rang cao cấp hiện đại |
+| **Kích thước bích đế** | Vuông $165 \times 165\text{ mm}$ (dày $16\text{ mm}$, bo góc $R15$) | Vuông $170 \times 170\text{ mm}$ (dày $20\text{ mm}$, bo góc $R16$) | Vuông $160 \times 160\text{ mm}$ (dày $16\text{ mm}$, bo góc $R14$) |
+| **Bu-lông bắt mặt máy** | 4 bu-lông M14 (tâm lỗ $\pm 65\text{ mm}$) | 4 bu-lông kéo M16 tại 4 góc ($\pm 68\text{ mm}$) | 4 bu-lông M14 (tâm lỗ $\pm 62\text{ mm}$) |
+| **Thân gối đỡ** | Cổ gang đúc $\varnothing 125\text{ mm}$ nhô $60\text{ mm}$ + côn loe bệ | Trụ gang $\varnothing 130\text{ mm}$ + 4 gân trợ lực tam giác | Vỏ ngoài gang $\varnothing 120\text{ mm}$ x dài $75\text{ mm}$ |
+| **Cơ cấu tăng chỉnh** | Cổ siết lục giác ren ngoài $S=105\text{ mm}$ dài $48\text{ mm}$ | 4 vít tỳ đẩy đối xứng M12 tại 4 cạnh giữa | Ống lồng trong $\varnothing 98\text{ mm}$ + Vô-lăng $\varnothing 140\text{ mm}$ |
+| **Cơ cấu khóa vị trí** | Cần gạt khóa nhanh góc $-135^\circ$ (bên trái dưới) | 4 đai ốc hãm M12 + 4 long đền vênh M16 | Vít chí khóa có tay quay chữ T trên lưng |
+| **Tra mỡ bôi trơn** | Vú mỡ đồng đối diện góc $+45^\circ$ | Vú mỡ nắp bích ngoài | Rãnh bôi trơn ống lồng trong |
+| **Nắp che bụi cốt** | Nắp tròn $\varnothing 86\text{ mm}$ bịt kín 3 vít M4 | Nắp bích chặn bạc đạn ngoài 4 bu-lông M8 | Nắp chụp trung tâm vô-lăng $\varnothing 85\text{ mm}$ |
+| **Chiều cao vươn nhô** | **$155\text{ mm}$ ($15.5\text{ cm}$)** | **$150\text{ mm}$ ($15.0\text{ cm}$)** | **$160\text{ mm}$ ($16.0\text{ cm}$)** |
+| **Độ ôm cốt láp $\varnothing 60$** | Ôm trọn $82\text{ mm}$ cốt láp nhô ra của trống | Ôm trọn $82\text{ mm}$ cốt láp nhô ra của trống | Ôm trọn $82\text{ mm}$ cốt láp nhô ra của trống |
+| **Ưu điểm vận hành** | Khóa nhanh cực nhạy, chuẩn thực tế 100% | Cực kỳ cứng vững, cân chỉnh cả độ nghiêng | Đọc vạch số khe hở trực tiếp bằng mắt |
 
 ---
 
 ### 15.3. Bố Trí Lắp Ráp Trên Mô Hình Máy Rang Hoàn Chỉnh (Tab 1)
-* **Cụm Bộ Chỉnh Mặt Máy Trước**:
-  * Tọa độ gá bệ: $Y = -518.0\text{ mm}$ (ốp vào mặt ngoài Mặt Máy Trước).
-  * Hướng tịnh tiến: Tấm đế trải từ $Y = -518.0 \to -534.0\text{ mm}$; hộp trượt ôm lấy đầu trục trước $\varnothing 60\text{ mm}$ ($Y \in [-600, -500\text{ mm}]$).
-  * Chức năng: Căn chỉnh trực tiếp khe hở $0.5\text{ mm}$ giữa mép trước trống và mặt máy trước.
-* **Cụm Bộ Chỉnh Mặt Máy Sau**:
-  * Tọa độ gá bệ: $Y = +618.0\text{ mm}$ (ốp vào mặt ngoài Mặt Máy Sau).
-  * Hướng tịnh tiến: Tấm đế trải từ $Y = +618.0 \to +634.0\text{ mm}$; hộp trượt ôm lấy đầu trục sau $\varnothing 60\text{ mm}$ ($Y \in [+600, +700\text{ mm}]$).
-  * Chức năng: Đỡ đầu đuôi trục, cân chỉnh độ song song và khoảng hở sau $9.95\text{ cm}$.
+* **Tích hợp đồng thời cả 3 thiết kế vào 1 Macro duy nhất**:
+  * **Cụm trước (Mặt máy trước tại $Y = -518.0\text{ mm}$)**: Bích phẳng áp khít mặt trước, thân gối vươn nhô về phía trước (hướng $-Y$), ôm trọn đầu cốt láp trước $\varnothing 60\text{ mm}$.
+  * **Cụm sau (Mặt máy sau tại $Y = +618.0\text{ mm}$)**: Bích phẳng áp khít mặt sau, thân gối vươn nhô về phía sau (hướng $+Y$), ôm trọn đầu cốt láp sau $\varnothing 60\text{ mm}$.
+* **Chuyển đổi 1-Click trên GUI**:
+  * Nhóm điều khiển: `⚙️ Lựa Chọn Kiểu Bộ Chỉnh Gối Bi Gắn Trên 2 Mặt Máy`.
+  * Hộp chọn QComboBox:
+    * `⭐ TK1: Kiểu Phương Ân (Cổ Lục Giác S105 + Cần Khóa Nhanh)` (Mặc định hiển thị)
+    * `⚡ TK2: Bích Gang 4 Ốc Đẩy - Kéo 2 Chiều (4 Kéo M16 + 4 Đẩy M12)`
+    * `🎯 TK3: Cartridge Vô-Lăng Vạch Chia Micromet (Khóa Tay T)`
+  * Khi người dùng chọn thiết kế nào, FreeCAD lập tức ẩn 2 thiết kế kia và hiển thị chính xác thiết kế được chọn trên cả 2 mặt máy.
+  * Nút `⚙️ Ẩn/Hiện Bộ Chỉnh Trên Máy`: Bật/tắt nhanh tầm nhìn bộ chỉnh đang chọn để quan sát cốt láp bên trong.
 
 ---
 
 ### 15.4. Tổ Chức Tab 3 Riêng Biệt Trong FreeCAD (`3_Bo_Chinh_Goi_Bi_Truc_Phi60`)
-* Theo đúng **Phương án 1** người dùng đã chọn:
-  * **Phần 1 (Bên Trái - Tọa độ $X = -280.0\text{ mm}$)**: **Mô hình tháo rời chi tiết (Exploded View)**.
-    * Tấm đế trượt, hộp trượt đỡ, tai ren, bu-lông tăng đơ, gối bi UC212, trục láp $\varnothing 60$ và các bu-lông M16 được tách rời theo phương không gian, thể hiện rõ từng mặt cắt, rãnh trượt $30\times 18\text{ mm}$, vòng bi và then cavet.
-  * **Phần 2 (Bên Phải - Tọa độ $X = +280.0\text{ mm}$)**: **Cụm đã gắn vào nhau hoàn chỉnh 100% (Assembled View)**.
-    * Thể hiện trạng thái làm việc thực tế: gối bi lọt khít trong hộp trượt, trục láp $\varnothing 60$ luồn xuyên tâm ca trong, bu-lông tăng đơ tỳ sát vách hộp và 4 bu-lông khóa kẹp chặt trên rãnh trượt.
-* **Tích hợp giao diện điều khiển GUI**:
-  * Nút chuyển nhanh trên Header: `⚙️ Tab 3: Bộ Chỉnh 1A`.
-  * Bộ 4 nút điều hướng góc nhìn: `📐 Isometric`, `👁️ Chiếu Đứng (Front)`, `🔝 Chiếu Bằng (Top)`, `👉 Chiếu Cạnh (Right)`.
-  * Nút ẩn/hiện bộ chỉnh trên Tab 1: `⚙️ Ẩn/Hiện Bộ Chỉnh Trục (2 Mặt Máy)`.
-  * Bảng BOM vật tư chi tiết nhúng trực tiếp trong Tab 3.
+* Đặt cả 3 thiết kế song song cạnh nhau trên cùng một mặt phẳng để người dùng dễ dàng so sánh hình dáng, tỷ lệ và cơ cấu:
+  * **TK1 (Bên Trái - $X = -350\text{ mm}$)**: Kiểu Phương Ân (Bích vuông $16.5\text{ cm}$, Cổ lục giác $S=105$, Cần gạt khóa $-135^\circ$).
+  * **TK2 (Ở Giữa   - $X = 0\text{ mm}$)**: Cụm Bích Gang Push-Pull 2 chiều (Bích $17\text{ cm}$, 4 Kéo M16 + 4 Đẩy M12, 4 gân trợ lực).
+  * **TK3 (Bên Phải - $X = +350\text{ mm}$)**: Cụm Cartridge Vô-Lăng Micromet (Bích $16\text{ cm}$, Vô-lăng $\varnothing 14\text{ cm}$, Vít chữ T).
+* **Hệ thống nút bấm chuyển góc nhìn 1-Click trên Tab 3**:
+  * `📐 Isometric (Cả 3)`: Quan sát toàn cảnh cả 3 thiết kế đặt cạnh nhau.
+  * `🔎 Soi TK1 (Phương Ân)`: Tự động zoom sát tâm $X = -350\text{ mm}$ để kiểm tra cổ lục giác và cần gạt khóa.
+  * `🔎 Soi TK2 (Push-Pull)`: Tự động zoom sát tâm $X = 0\text{ mm}$ để kiểm tra hệ thống 4 bu-lông kéo + 4 vít đẩy.
+  * `🔎 Soi TK3 (Cartridge)`: Tự động zoom sát tâm $X = +350\text{ mm}$ để kiểm tra vô-lăng và tay khóa chữ T.
+  * `👁️ Chiếu Đứng (Front)`, `🔝 Chiếu Bằng (Top)`, `👉 Chiếu Cạnh (Right)`.
+
 
 
 
