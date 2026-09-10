@@ -337,31 +337,32 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     R_ren_dinh = 55.0
     R_ren_day = 52.0
 
-    dY_1 = -160.0 if is_exploded else 0.0
-    dY_2 = -40.0 if is_exploded else 0.0
-    dY_3 = 40.0 if is_exploded else 0.0
-    dY_4 = 120.0 if is_exploded else 0.0
-    dY_5 = 180.0 if is_exploded else 0.0
-    dY_6 = 250.0 if is_exploded else 0.0
+    # Tọa độ Y riêng biệt cho từng chi tiết (TÁCH XA NHAU RẤT RỘNG 15-17CM)
+    Y_base_1 = -350.0 if is_exploded else 0.0
+    Y_base_2 = -50.0 if is_exploded else 40.0
+    Y_nut    = 220.0 if is_exploded else 128.0
+    Y_4      = 400.0 if is_exploded else 75.0
+    Y_5      = 630.0 if is_exploded else 90.0
+    Y_6      = 820.0 if is_exploded else 150.0
 
     # 1. Chân bệ bích 4 lỗ + Thân trụ cao 15cm ren trong (BỎ 4 ỐC MÀU)
-    p_bich = Part.makeBox(W_bich, T_bich, W_bich, App.Vector(-W_bich / 2.0, dY_1, -W_bich / 2.0))
+    p_bich = Part.makeBox(W_bich, T_bich, W_bich, App.Vector(-W_bich / 2.0, Y_base_1, -W_bich / 2.0))
     edges_Y = [e for e in p_bich.Edges if abs(e.tangentAt(0).y) > 0.9]
     p_bich = p_bich.makeFillet(15.0, edges_Y)
 
     for xb in [-65.0, 65.0]:
         for zb in [-65.0, 65.0]:
-            h_bolt = Part.makeCylinder(7.25, T_bich + 10.0, App.Vector(xb, dY_1 - 5.0, zb), App.Vector(0, 1, 0))
+            h_bolt = Part.makeCylinder(7.25, T_bich + 10.0, App.Vector(xb, Y_base_1 - 5.0, zb), App.Vector(0, 1, 0))
             p_bich = p_bich.cut(h_bolt)
 
-    cyl_tru = Part.makeCylinder(R_tru_out, H_chan - T_bich, App.Vector(0, dY_1 + T_bich, 0), App.Vector(0, 1, 0))
-    cone_gan = Part.makeCone(R_tru_out + 10.0, R_tru_out, 20.0, App.Vector(0, dY_1 + T_bich, 0), App.Vector(0, 1, 0))
-    bore_in = Part.makeCylinder(R_ren_day, H_chan + 20.0, App.Vector(0, dY_1 - 10.0, 0), App.Vector(0, 1, 0))
+    cyl_tru = Part.makeCylinder(R_tru_out, H_chan - T_bich, App.Vector(0, Y_base_1 + T_bich, 0), App.Vector(0, 1, 0))
+    cone_gan = Part.makeCone(R_tru_out + 10.0, R_tru_out, 20.0, App.Vector(0, Y_base_1 + T_bich, 0), App.Vector(0, 1, 0))
+    bore_in = Part.makeCylinder(R_ren_day, H_chan + 20.0, App.Vector(0, Y_base_1 - 10.0, 0), App.Vector(0, 1, 0))
 
     chan_solid = p_bich.fuse(cyl_tru).fuse(cone_gan).cut(bore_in)
 
     for i in range(8):
-        y_th = dY_1 + 40.0 + i * 12.0
+        y_th = Y_base_1 + 40.0 + i * 12.0
         ring_groove = Part.makeCylinder(R_ren_dinh, 3.0, App.Vector(0, y_th, 0), App.Vector(0, 1, 0)).cut(
             Part.makeCylinder(R_ren_day - 1.0, 5.0, App.Vector(0, y_th - 1.0, 0), App.Vector(0, 1, 0))
         )
@@ -379,19 +380,19 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     R2_out_root = R_ren_day + 0.5
     R2_in = 43.0
 
-    body2 = Part.makeCylinder(R2_out_root, L_ong2, App.Vector(0, dY_2 + 25.0, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R2_in, L_ong2 + 20.0, App.Vector(0, dY_2 + 15.0, 0), App.Vector(0, 1, 0))
+    body2 = Part.makeCylinder(R2_out_root, L_ong2, App.Vector(0, Y_base_2, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R2_in, L_ong2 + 20.0, App.Vector(0, Y_base_2 - 10.0, 0), App.Vector(0, 1, 0))
     )
     threads2 = []
     for i in range(9):
-        y_t2 = dY_2 + 35.0 + i * 9.0
+        y_t2 = Y_base_2 + 10.0 + i * 9.0
         th_ring = Part.makeCylinder(R2_out_crest, 4.5, App.Vector(0, y_t2, 0), App.Vector(0, 1, 0)).cut(
             Part.makeCylinder(R2_out_root - 1.0, 6.0, App.Vector(0, y_t2 - 1.0, 0), App.Vector(0, 1, 0))
         )
         threads2.append(th_ring)
 
-    rim2 = Part.makeCylinder(R_tru_out - 2.0, 12.0, App.Vector(0, dY_2 + 25.0 + L_ong2 - 12.0, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R2_in, 16.0, App.Vector(0, dY_2 + 25.0 + L_ong2 - 14.0, 0), App.Vector(0, 1, 0))
+    rim2 = Part.makeCylinder(R_tru_out - 2.0, 12.0, App.Vector(0, Y_base_2 + L_ong2 - 12.0, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R2_in, 16.0, App.Vector(0, Y_base_2 + L_ong2 - 14.0, 0), App.Vector(0, 1, 0))
     )
     solid_2 = Part.makeCompound([body2, rim2] + threads2)
     obj_2 = doc.addObject("Part::Feature", f"{prefix}2_Ong_Co_Dinh_Ren_Ngoai")
@@ -400,8 +401,7 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     gan_mau(obj_2, (0.12, 0.55, 0.82), line_color=(0.05, 0.30, 0.50), line_width=1.6)
     objs.append(obj_2)
 
-    # 3. Long đền tán khóa lục giác (vặn bằng lục giác 20cm)
-    Y_nut = dY_3 + 80.0
+    # 3. Long đền tán khóa lục giác (vặn bằng cần lục giác 20cm)
     pts_hex = []
     R_hex = 68.0
     for i in range(6):
@@ -428,12 +428,11 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     thick4 = 3.0
     R4_in = R4_out - thick4
     L4 = 65.0
-    Y4 = dY_4 + 50.0
 
-    cyl4_out = Part.makeCylinder(R4_out, L4, App.Vector(0, Y4, 0), App.Vector(0, 1, 0))
-    cyl4_in = Part.makeCylinder(R4_in, L4 + 10.0, App.Vector(0, Y4 - 5.0, 0), App.Vector(0, 1, 0))
-    go_chan = Part.makeCylinder(R4_in, 5.0, App.Vector(0, Y4, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(31.0, 7.0, App.Vector(0, Y4 - 1.0, 0), App.Vector(0, 1, 0))
+    cyl4_out = Part.makeCylinder(R4_out, L4, App.Vector(0, Y_4, 0), App.Vector(0, 1, 0))
+    cyl4_in = Part.makeCylinder(R4_in, L4 + 10.0, App.Vector(0, Y_4 - 5.0, 0), App.Vector(0, 1, 0))
+    go_chan = Part.makeCylinder(R4_in, 5.0, App.Vector(0, Y_4, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(31.0, 7.0, App.Vector(0, Y_4 - 1.0, 0), App.Vector(0, 1, 0))
     )
     solid_4 = cyl4_out.cut(cyl4_in).fuse(go_chan)
 
@@ -444,29 +443,28 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     objs.append(obj_4)
 
     # 5. Bạc đạn đỡ trục phi 60mm ở trong 4
-    Y5 = dY_5 + 60.0
     R5_out = 40.0
     R5_in = 30.0
     B5 = 22.0
 
-    out_ring5 = Part.makeCylinder(R5_out, B5, App.Vector(0, Y5, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R5_out - 4.0, B5 + 4.0, App.Vector(0, Y5 - 2.0, 0), App.Vector(0, 1, 0))
+    out_ring5 = Part.makeCylinder(R5_out, B5, App.Vector(0, Y_5, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R5_out - 4.0, B5 + 4.0, App.Vector(0, Y_5 - 2.0, 0), App.Vector(0, 1, 0))
     )
-    in_ring5 = Part.makeCylinder(R5_in + 4.0, B5, App.Vector(0, Y5, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R5_in, B5 + 4.0, App.Vector(0, Y5 - 2.0, 0), App.Vector(0, 1, 0))
+    in_ring5 = Part.makeCylinder(R5_in + 4.0, B5, App.Vector(0, Y_5, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R5_in, B5 + 4.0, App.Vector(0, Y_5 - 2.0, 0), App.Vector(0, 1, 0))
     )
     balls5 = []
     for i in range(10):
         ang = i * (2.0 * math.pi / 10.0)
         bx = 35.0 * math.cos(ang)
         bz = 35.0 * math.sin(ang)
-        balls5.append(Part.makeSphere(4.0, App.Vector(bx, Y5 + B5 / 2.0, bz)))
+        balls5.append(Part.makeSphere(4.0, App.Vector(bx, Y_5 + B5 / 2.0, bz)))
 
-    seal5_front = Part.makeCylinder(R5_out - 1.0, 1.5, App.Vector(0, Y5 + B5 - 1.5, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R5_in + 3.0, 3.0, App.Vector(0, Y5 + B5 - 2.0, 0), App.Vector(0, 1, 0))
+    seal5_front = Part.makeCylinder(R5_out - 1.0, 1.5, App.Vector(0, Y_5 + B5 - 1.5, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R5_in + 3.0, 3.0, App.Vector(0, Y_5 + B5 - 2.0, 0), App.Vector(0, 1, 0))
     )
-    seal5_back = Part.makeCylinder(R5_out - 1.0, 1.5, App.Vector(0, Y5, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R5_in + 3.0, 3.0, App.Vector(0, Y5 - 0.5, 0), App.Vector(0, 1, 0))
+    seal5_back = Part.makeCylinder(R5_out - 1.0, 1.5, App.Vector(0, Y_5, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R5_in + 3.0, 3.0, App.Vector(0, Y_5 - 0.5, 0), App.Vector(0, 1, 0))
     )
     solid_5 = Part.makeCompound([out_ring5, in_ring5, seal5_front, seal5_back] + balls5)
 
@@ -477,18 +475,17 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     objs.append(obj_5)
 
     # 6. Mặt bít (nắp bịt đầu ngoài)
-    Y6 = dY_6 + 95.0
     R6 = 47.0
-    flange_bit = Part.makeCylinder(R6, 8.0, App.Vector(0, Y6, 0), App.Vector(0, 1, 0))
-    spigot_bit = Part.makeCylinder(R2_in - 0.5, 6.0, App.Vector(0, Y6 - 6.0, 0), App.Vector(0, 1, 0))
-    bore_bit = Part.makeCylinder(31.0, 20.0, App.Vector(0, Y6 - 10.0, 0), App.Vector(0, 1, 0))
+    flange_bit = Part.makeCylinder(R6, 8.0, App.Vector(0, Y_6, 0), App.Vector(0, 1, 0))
+    spigot_bit = Part.makeCylinder(R2_in - 0.5, 6.0, App.Vector(0, Y_6 - 6.0, 0), App.Vector(0, 1, 0))
+    bore_bit = Part.makeCylinder(31.0, 20.0, App.Vector(0, Y_6 - 10.0, 0), App.Vector(0, 1, 0))
 
     screws6 = []
     for i in range(4):
         a_sc = math.radians(i * 90.0 + 45.0)
         xs = 38.0 * math.cos(a_sc)
         zs = 38.0 * math.sin(a_sc)
-        sc = Part.makeCylinder(3.0, 12.0, App.Vector(xs, Y6 - 2.0, zs), App.Vector(0, 1, 0))
+        sc = Part.makeCylinder(3.0, 12.0, App.Vector(xs, Y_6 - 2.0, zs), App.Vector(0, 1, 0))
         screws6.append(sc)
 
     solid_6 = flange_bit.fuse(spigot_bit).cut(bore_bit)
