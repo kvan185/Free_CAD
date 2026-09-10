@@ -890,9 +890,20 @@ def tao_mo_hinh_chi_tiet(doc):
     )
     hinh_mat_truoc = hinh_mat_truoc.cut(cutter_lo_nap_truoc)
 
+    # Khoét 4 lỗ phi 15mm bắt bu-lông M14 của 4 cây láp giằng cố định 2 mặt máy
+    pts_tie_rods = [
+        (+315.0, +315.0),   # Cây trên - phải (Top-Right: R = 445.5mm, góc 45°)
+        (-315.0, +315.0),   # Cây trên - trái (Top-Left: R = 445.5mm, góc 135°)
+        (+400.0, -350.0),   # Cây dưới - phải (Bottom-Right: vai chân vát 18mm)
+        (-400.0, -350.0)    # Cây dưới - trái (Bottom-Left: vai chân vát 18mm)
+    ]
+    for xr, zr in pts_tie_rods:
+        hole_tie = Part.makeCylinder(7.5, T_mat + 10.0, App.Vector(xr, Y_mat - 5.0, zr), App.Vector(0, 1, 0))
+        hinh_mat_truoc = hinh_mat_truoc.cut(hole_tie)
+
     obj_mat_truoc = doc.addObject("Part::Feature", "Mat_May_Truoc_Ga_Trong_18mm")
     obj_mat_truoc.Shape = hinh_mat_truoc
-    obj_mat_truoc.Label = "6. Mặt Máy Trước Gá Trống (Sắt 1.8cm, D96cm, Chân Vát Gờ Đứng 5.5cm Đáy 1.1m, Lỗ D65mm, Lỗ Nạp 20x30cm, Miệng Xả 50cm, Lỗ Thăm D30mm)"
+    obj_mat_truoc.Label = "6. Mặt Máy Trước Gá Trống (Sắt 1.8cm, D96cm, Chân Vát Gờ Đứng 5.5cm Đáy 1.1m, Lỗ D65mm, Lỗ Nạp 20x30cm, Miệng Xả 50cm, Lỗ Thăm D30mm, 4 Lỗ Láp Giằng D15mm)"
     # Màu xám xanh thép công nghiệp dày dặn
     gan_mau(obj_mat_truoc, (0.28, 0.35, 0.45), line_color=(0.10, 0.15, 0.25), line_width=2.0)
 
@@ -1317,10 +1328,59 @@ def tao_mo_hinh_chi_tiet(doc):
     )
     hinh_mat_sau = hinh_mat_sau.cut(cutter_lo_sau)
 
+    # Khoét 4 lỗ phi 15mm bắt bu-lông M14 của 4 cây láp giằng cố định 2 mặt máy
+    for xr, zr in pts_tie_rods:
+        hole_tie_s = Part.makeCylinder(7.5, T_mat + 10.0, App.Vector(xr, Y_mat_sau - 5.0, zr), App.Vector(0, 1, 0))
+        hinh_mat_sau = hinh_mat_sau.cut(hole_tie_s)
+
     obj_mat_sau = doc.addObject("Part::Feature", "Mat_May_Sau_Ga_Trong_18mm")
     obj_mat_sau.Shape = hinh_mat_sau
-    obj_mat_sau.Label = "7. Mặt Máy Sau (Sắt 1.8cm, Chân Vát Gờ Đứng 5.5cm, Lỗ Cốt D65mm, Cửa Lò 50x30cm Dưới)"
+    obj_mat_sau.Label = "7. Mặt Máy Sau (Sắt 1.8cm, Chân Vát Gờ Đứng 5.5cm, Lỗ Cốt D65mm, Cửa Lò 50x30cm, 4 Lỗ Láp Giằng D15mm)"
     gan_mau(obj_mat_sau, (0.28, 0.35, 0.45), line_color=(0.10, 0.15, 0.25), line_width=2.0)
+
+    # -------------------------------------------------------------
+    # 7c. 4 CÂY LÁP GIẰNG TRÒN PHI 30MM KHOÉT REN TRONG M14 Ở 2 ĐẦU CỐ ĐỊNH 2 MẶT MÁY
+    #     - Chiều dài lọt lòng chuẩn cữ: L = 1100.0mm (từ Y = -500.0mm đến Y = +600.0mm)
+    #     - Thân thép tròn đặc C45 phi 30mm, 2 đầu khoét taro ren M14x2.0 sâu 40mm
+    #     - 8 Bu-lông lục giác M14x40mm kèm long đền vênh & phẳng siết ép 2 mặt máy sắt 18mm
+    # -------------------------------------------------------------
+    R_rod = 15.0      # Phi 30mm -> R = 15mm
+    L_rod = 1100.0    # 1100mm lọt lòng giữa 2 mặt máy
+    Y_start_rod = -500.0
+
+    solids_tie_rods = []
+    solids_bolts_washers = []
+
+    for xr, zr in pts_tie_rods:
+        # Thân cây láp tròn phi 30mm
+        rod_cyl = Part.makeCylinder(R_rod, L_rod, App.Vector(xr, Y_start_rod, zr), App.Vector(0, 1, 0))
+        # Khoét lỗ ren M14 sâu 40mm ở 2 đầu
+        hole_front = Part.makeCylinder(6.0, 40.0, App.Vector(xr, Y_start_rod - 1.0, zr), App.Vector(0, 1, 0))
+        hole_rear = Part.makeCylinder(6.0, 40.0, App.Vector(xr, Y_start_rod + L_rod - 39.0, zr), App.Vector(0, 1, 0))
+        rod_solid = rod_cyl.cut(hole_front).cut(hole_rear)
+        solids_tie_rods.append(rod_solid)
+
+        # Bu-lông M14 & long đền ở Mặt Máy Trước (Y = -518mm)
+        head_f = Part.makeCylinder(12.7, 8.8, App.Vector(xr, -518.0 - 8.8 - 3.0, zr), App.Vector(0, 1, 0))
+        washer_f = Part.makeCylinder(14.0, 3.0, App.Vector(xr, -518.0 - 3.0, zr), App.Vector(0, 1, 0))
+        shank_f = Part.makeCylinder(7.0, 40.0, App.Vector(xr, -518.0, zr), App.Vector(0, 1, 0))
+        solids_bolts_washers.append(head_f.fuse(washer_f).fuse(shank_f))
+
+        # Bu-lông M14 & long đền ở Mặt Máy Sau (Y = +618mm)
+        head_r = Part.makeCylinder(12.7, 8.8, App.Vector(xr, 618.0 + 3.0, zr), App.Vector(0, 1, 0))
+        washer_r = Part.makeCylinder(14.0, 3.0, App.Vector(xr, 618.0, zr), App.Vector(0, 1, 0))
+        shank_r = Part.makeCylinder(7.0, 40.0, App.Vector(xr, 618.0 - 40.0, zr), App.Vector(0, 1, 0))
+        solids_bolts_washers.append(head_r.fuse(washer_r).fuse(shank_r))
+
+    obj_tie_rods = doc.addObject("Part::Feature", "4_Cay_Lap_Giang_Khoet_Ren_2_Dau_Phi30")
+    obj_tie_rods.Shape = Part.makeCompound(solids_tie_rods)
+    obj_tie_rods.Label = "7c1. 4 Cây Láp Giằng Phi 30mm Dài 110cm Khoét Ren M14 Hai Đầu Cố Định 2 Mặt Máy"
+    gan_mau(obj_tie_rods, (0.85, 0.88, 0.92), line_color=(0.15, 0.20, 0.25), line_width=1.6)
+
+    obj_tie_bolts = doc.addObject("Part::Feature", "8_BuLong_M14_Va_LongDen_CoDinh_2MatMay")
+    obj_tie_bolts.Shape = Part.makeCompound(solids_bolts_washers)
+    obj_tie_bolts.Label = "7c2. 8 Bu-lông M14x40mm & Long Đền Vênh Ép Cữ Hai Mặt Máy Vào 4 Cây Láp"
+    gan_mau(obj_tie_bolts, (0.85, 0.70, 0.20), line_color=(0.40, 0.30, 0.05), line_width=1.2)
 
     # 7b. MÁNG NẠP LIỆU DẪN HƯỚNG INOX 304 CHỐNG RỚT HẠT (MẶT TRƯỚC VÀO SÂU TRỐNG 6CM, ĐỘ DỐC CỰC ĐẠI 50.6°):
     # - Vượt qua khe hở quay 2mm giữa mép trống và mặt máy trước tĩnh (Y = -500mm)
@@ -1604,7 +1664,7 @@ def tao_mo_hinh_chi_tiet(doc):
     cum_chinh_sau = tao_bo_chinh_phuong_an_chi_tiet(doc, plc_base=plc_chinh_sau, is_exploded=False, prefix="May_Chinh_Sau_")
     items_chinh_may = cum_chinh_truoc + cum_chinh_sau
 
-    return obj_trong, obj_ao_ngoai, obj_lap, obj_chong, obj_canh_ngoai, obj_canh_trong, obj_day_sau, obj_mat_truoc, obj_mat_sau, obj_chan_de, obj_cay_tham, obj_tay_cam, obj_cua_sau, obj_ban_le_sau, obj_buong_dot_gach, obj_mang_nap, items_hop_may, items_chinh_may
+    return obj_trong, obj_ao_ngoai, obj_lap, obj_chong, obj_canh_ngoai, obj_canh_trong, obj_day_sau, obj_mat_truoc, obj_mat_sau, obj_chan_de, obj_cay_tham, obj_tay_cam, obj_cua_sau, obj_ban_le_sau, obj_buong_dot_gach, obj_mang_nap, items_hop_may, items_chinh_may, obj_tie_rods, obj_tie_bolts
 
 
 def tao_hop_vo_hang(doc, plc=None, prefix=""):
@@ -1991,6 +2051,8 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         obj_mang_nap=None,
         items_hop_may=None,
         items_chinh_may=None,
+        obj_tie_rods=None,
+        obj_tie_bolts=None,
         doc_hop=None,
         items_hop=None,
         doc_chinh=None,
@@ -2023,6 +2085,8 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         self.obj_ban_le_sau = obj_ban_le_sau
         self.obj_buong_dot_gach = obj_buong_dot_gach
         self.obj_mang_nap = obj_mang_nap
+        self.obj_tie_rods = obj_tie_rods
+        self.obj_tie_bolts = obj_tie_bolts
         self.items_chinh_may = items_chinh_may or []
         self.hop_van_may = items_hop_may[7] if items_hop_may and len(items_hop_may) > 7 else None
         self.plc_hop = App.Placement(App.Vector(0.0, -818.0, 155.0), App.Rotation(App.Vector(0, 0, 1), 90.0))
