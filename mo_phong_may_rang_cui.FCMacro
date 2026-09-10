@@ -128,6 +128,179 @@ def gan_mau(obj, mau_rgb, line_color=(0.2, 0.2, 0.2), line_width=1.5, do_trong_s
         if hasattr(vo, "LineWidth"):
             vo.LineWidth = line_width
 
+def tao_cum_bo_chinh_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
+    """
+    Tạo cụm Bộ Chỉnh Tỳ Ren Tiến/Lùi Gối Bi Trục Phi 60mm (Trường hợp 1A):
+    - is_exploded=True: Tách rời các chi tiết theo thứ tự lắp ráp để soi cấu tạo (Phần 1 Tab 3)
+    - is_exploded=False: Lắp ráp 100% hoàn chỉnh thành khối cơ cấu ăn khớp (Phần 2 Tab 3 & gắn trên máy Tab 1)
+    """
+    objs = []
+
+    R_shaft = 30.0          # Phi 60mm
+    R_inner_ring = 37.5     # Ca trong ngoài Phi 75mm
+    R_outer_ring_in = 55.0  # Ca ngoài trong Phi 110mm
+    R_outer_ring_out = 70.0 # Ca ngoài ngoài Phi 140mm
+    B_inner = 65.0          # Bề dày ca trong 65mm
+    B_outer = 45.0          # Bề dày ca ngoài 45mm
+
+    dY_base = -120.0 if is_exploded else 0.0
+    dY_carriage = 0.0
+    dY_bearing = 80.0 if is_exploded else 0.0
+    dY_shaft = 160.0 if is_exploded else 0.0
+    dZ_bolt = -80.0 if is_exploded else 0.0
+
+    # 1. Bệ đế trượt dẫn hướng (Thép 16mm kèm 2 ray dẫn hướng)
+    W_base = 260.0
+    H_base = 240.0
+    T_base = 16.0
+    base_box = Part.makeBox(W_base, T_base, H_base, App.Vector(-W_base / 2.0, dY_base, -H_base / 2.0))
+    hole_center = Part.makeCylinder(35.0, T_base + 10.0, App.Vector(0, dY_base - 5.0, 0), App.Vector(0, 1, 0))
+    solid_base = base_box.cut(hole_center)
+
+    rail_L = Part.makeBox(20.0, 25.0, H_base, App.Vector(-120.0, dY_base + T_base, -H_base / 2.0))
+    rail_R = Part.makeBox(20.0, 25.0, H_base, App.Vector(100.0, dY_base + T_base, -H_base / 2.0))
+    solid_base = solid_base.fuse(rail_L).fuse(rail_R)
+
+    obj_base = doc.addObject("Part::Feature", f"{prefix}De_Dan_Huong")
+    obj_base.Shape = solid_base
+    obj_base.Label = f"{prefix}1. Bệ Đế Trượt Dẫn Hướng (Thép 16mm, 2 Ray Chữ L)"
+    gan_mau(obj_base, (0.28, 0.35, 0.45), line_color=(0.12, 0.18, 0.25), line_width=1.8)
+    objs.append(obj_base)
+
+    # 2. Tai ren M16 cố định
+    W_tai = 60.0
+    H_tai = 40.0
+    T_tai = 16.0
+    Z_tai = -H_base / 2.0 + H_tai / 2.0
+    Y_tai = dY_base + T_base + 25.0
+    tai_box = Part.makeBox(W_tai, T_tai, H_tai, App.Vector(-W_tai / 2.0, Y_tai, Z_tai - H_tai / 2.0))
+    hole_tai = Part.makeCylinder(8.0, T_tai + 10.0, App.Vector(0, Y_tai - 5.0, Z_tai), App.Vector(0, 1, 0))
+    solid_tai = tai_box.cut(hole_tai)
+
+    obj_tai = doc.addObject("Part::Feature", f"{prefix}Tai_Ren_M16")
+    obj_tai.Shape = solid_tai
+    obj_tai.Label = f"{prefix}2. Tai Ren M16 Cố Định (Thép 16mm Hàn Bệ)"
+    gan_mau(obj_tai, (0.75, 0.20, 0.25), line_color=(0.45, 0.10, 0.15), line_width=1.5)
+    objs.append(obj_tai)
+
+    # 3. Bu-lông tỳ ren M16x80mm kèm tán hãm & đĩa tỳ
+    L_bolt = 80.0
+    shank_bolt = Part.makeCylinder(8.0, L_bolt, App.Vector(0, Y_tai + 30.0 + dZ_bolt, Z_tai), App.Vector(0, -1, 0))
+    head_bolt = Part.makeCylinder(13.0, 12.0, App.Vector(0, Y_tai + 30.0 + dZ_bolt, Z_tai), App.Vector(0, 1, 0))
+    locknut_bolt = Part.makeCylinder(13.0, 10.0, App.Vector(0, Y_tai + 10.0 + dZ_bolt, Z_tai), App.Vector(0, 1, 0))
+    pad_bolt = Part.makeCylinder(14.0, 6.0, App.Vector(0, Y_tai + 30.0 + dZ_bolt - L_bolt, Z_tai), App.Vector(0, -1, 0))
+    solid_thrust_bolt = shank_bolt.fuse(head_bolt).fuse(locknut_bolt).fuse(pad_bolt)
+
+    obj_bolt = doc.addObject("Part::Feature", f"{prefix}BuLong_Ty_M16")
+    obj_bolt.Shape = solid_thrust_bolt
+    obj_bolt.Label = f"{prefix}3. Bu-lông Tỳ Ren M16x80mm Kèm Tán Hãm & Đĩa Tỳ Chịu Lực"
+    gan_mau(obj_bolt, (0.92, 0.25, 0.30), line_color=(0.55, 0.10, 0.15), line_width=1.6)
+    objs.append(obj_bolt)
+
+    # 4. Vỏ hộp trượt gá gối bi (Thép 12mm, 4 rãnh ô-van 30mm)
+    W_car = 200.0
+    H_car = 180.0
+    T_car = 65.0
+    car_box = Part.makeBox(W_car, T_car, H_car, App.Vector(-W_car / 2.0, dY_carriage + T_base + 2.0, -H_car / 2.0))
+    hole_bearing = Part.makeCylinder(R_outer_ring_out, T_car + 10.0, App.Vector(0, dY_carriage + T_base - 5.0, 0), App.Vector(0, 1, 0))
+    solid_car = car_box.cut(hole_bearing)
+
+    for xb, zb in [(-75.0, -60.0), (75.0, -60.0), (-75.0, 60.0), (75.0, 60.0)]:
+        slot_cyl1 = Part.makeCylinder(9.0, H_car + 10.0, App.Vector(xb - 7.5, dY_carriage + T_base - 5.0, zb), App.Vector(0, 1, 0))
+        slot_cyl2 = Part.makeCylinder(9.0, H_car + 10.0, App.Vector(xb + 7.5, dY_carriage + T_base - 5.0, zb), App.Vector(0, 1, 0))
+        slot_box = Part.makeBox(15.0, T_car + 10.0, 18.0, App.Vector(xb - 7.5, dY_carriage + T_base - 5.0, zb - 9.0))
+        slot_shape = slot_cyl1.fuse(slot_cyl2).fuse(slot_box)
+        solid_car = solid_car.cut(slot_shape)
+
+    obj_car = doc.addObject("Part::Feature", f"{prefix}Hop_Truot_Goi_Bi")
+    obj_car.Shape = solid_car
+    obj_car.Label = f"{prefix}4. Vỏ Hộp Trượt Gá Gối Bi (Thép 12mm, 4 Rãnh Ô-van Chỉnh Dọc 30mm)"
+    gan_mau(obj_car, (0.12, 0.52, 0.78), line_color=(0.06, 0.28, 0.45), line_width=1.8, do_trong_suot=30)
+    objs.append(obj_car)
+
+    # 5. Vòng bi bạc đạn lòng cầu UC212 (Phi 60/140mm)
+    Y_bear_center = dY_carriage + T_base + 2.0 + T_car / 2.0 + dY_bearing
+    out_cyl1 = Part.makeCylinder(R_outer_ring_out, B_outer, App.Vector(0, Y_bear_center - B_outer / 2.0, 0), App.Vector(0, 1, 0))
+    out_cyl2 = Part.makeCylinder(R_outer_ring_in, B_outer + 10.0, App.Vector(0, Y_bear_center - B_outer / 2.0 - 5.0, 0), App.Vector(0, 1, 0))
+    solid_outer_ring = out_cyl1.cut(out_cyl2)
+
+    in_cyl1 = Part.makeCylinder(R_inner_ring, B_inner, App.Vector(0, Y_bear_center - B_inner / 2.0, 0), App.Vector(0, 1, 0))
+    in_cyl2 = Part.makeCylinder(R_shaft, B_inner + 10.0, App.Vector(0, Y_bear_center - B_inner / 2.0 - 5.0, 0), App.Vector(0, 1, 0))
+    solid_inner_ring = in_cyl1.cut(in_cyl2)
+
+    balls = []
+    R_pitch = (R_outer_ring_in + R_inner_ring) / 2.0
+    for i in range(8):
+        angle = i * (2.0 * math.pi / 8.0)
+        bx = R_pitch * math.cos(angle)
+        zb = R_pitch * math.sin(angle)
+        ball = Part.makeSphere(10.5, App.Vector(bx, Y_bear_center, zb))
+        balls.append(ball)
+    solid_balls = Part.makeCompound(balls)
+
+    seal1 = Part.makeCylinder(R_outer_ring_in - 1.0, 3.0, App.Vector(0, Y_bear_center - B_outer / 2.0 - 3.0, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R_inner_ring + 1.0, 10.0, App.Vector(0, Y_bear_center - B_outer / 2.0 - 6.0, 0), App.Vector(0, 1, 0))
+    )
+    seal2 = Part.makeCylinder(R_outer_ring_in - 1.0, 3.0, App.Vector(0, Y_bear_center + B_outer / 2.0, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R_inner_ring + 1.0, 10.0, App.Vector(0, Y_bear_center + B_outer / 2.0 - 3.0, 0), App.Vector(0, 1, 0))
+    )
+
+    solid_bearing = Part.makeCompound([solid_outer_ring, solid_inner_ring, solid_balls, seal1, seal2])
+    obj_bear = doc.addObject("Part::Feature", f"{prefix}Bac_Dan_UC212")
+    obj_bear.Shape = solid_bearing
+    obj_bear.Label = f"{prefix}5. Bạc Đạn Lòng Cầu UC212 (Phi 60/140mm, 8 Bi Cầu, Phớt Chặn Mỡ)"
+    gan_mau(obj_bear, (0.15, 0.68, 0.48), line_color=(0.06, 0.35, 0.22), line_width=1.8)
+    objs.append(obj_bear)
+
+    # 6. Đoạn cốt láp bậc Phi 60mm kèm rãnh then
+    L_shaft_sample = 120.0
+    shaft_cyl = Part.makeCylinder(R_shaft, L_shaft_sample, App.Vector(0, Y_bear_center - L_shaft_sample / 2.0 + dY_shaft, 0), App.Vector(0, 1, 0))
+    keyway = Part.makeBox(18.0, 60.0, 11.0, App.Vector(-9.0, Y_bear_center + dY_shaft, R_shaft - 7.0))
+    solid_shaft = shaft_cyl.cut(keyway)
+
+    obj_shaft = doc.addObject("Part::Feature", f"{prefix}Cot_Lap_Phi60")
+    obj_shaft.Shape = solid_shaft
+    obj_shaft.Label = f"{prefix}6. Đoạn Cốt Láp Bậc Phi 60mm (Rãnh Then 18x11mm)"
+    gan_mau(obj_shaft, (0.90, 0.72, 0.22), line_color=(0.35, 0.25, 0.05), line_width=2.0)
+    objs.append(obj_shaft)
+
+    # 7. 4 Bu-lông M16 khóa gối trượt
+    bolts_locking = []
+    for xb, zb in [(-75.0, -60.0), (75.0, -60.0), (-75.0, 60.0), (75.0, 60.0)]:
+        shank_l = Part.makeCylinder(8.0, T_car + T_base + 20.0, App.Vector(xb, dY_carriage + T_base - 10.0, zb), App.Vector(0, 1, 0))
+        head_l = Part.makeCylinder(13.0, 10.0, App.Vector(xb, dY_carriage + T_base + T_car + 2.0, zb), App.Vector(0, 1, 0))
+        washer_l = Part.makeCylinder(16.0, 3.0, App.Vector(xb, dY_carriage + T_base + T_car, zb), App.Vector(0, 1, 0))
+        bolts_locking.append(shank_l.fuse(head_l).fuse(washer_l))
+    solid_bolts_lock = Part.makeCompound(bolts_locking)
+    obj_bolts_lock = doc.addObject("Part::Feature", f"{prefix}4_BuLong_Khoa_M16")
+    obj_bolts_lock.Shape = solid_bolts_lock
+    obj_bolts_lock.Label = f"{prefix}7. 4 Bu-lông M16 Khóa Gối Trượt (Kèm Long Đền)"
+    gan_mau(obj_bolts_lock, (0.92, 0.78, 0.25), line_color=(0.45, 0.35, 0.08), line_width=1.2)
+    objs.append(obj_bolts_lock)
+
+    # Áp dụng Placement
+    if plc_base is not None and plc_base != App.Placement():
+        for ob in objs:
+            if ob and hasattr(ob, "Placement"):
+                ob.Placement = plc_base.multiply(ob.Placement)
+
+    return objs
+
+
+def tao_tab_3_bo_chinh(doc):
+    """
+    Tạo tài liệu Tab 3 gồm 2 phần rõ rệt:
+    - Phần 1 (Bên Trái): Chi tiết bộ chỉnh khi chưa gắn vào nhau (Exploded View).
+    - Phần 2 (Bên Phải): Cụm bộ chỉnh đã gắn vào nhau hoàn chỉnh 100% (Assembled View).
+    """
+    plc_exploded = App.Placement(App.Vector(-280.0, 0, 0), App.Rotation())
+    plc_assembled = App.Placement(App.Vector(280.0, 0, 0), App.Rotation())
+
+    objs_exp = tao_cum_bo_chinh_chi_tiet(doc, plc_base=plc_exploded, is_exploded=True, prefix="1_Thao_Roi_")
+    objs_asm = tao_cum_bo_chinh_chi_tiet(doc, plc_base=plc_assembled, is_exploded=False, prefix="2_Lap_Rap_")
+
+    return objs_exp + objs_asm
+
 
 def tao_mo_hinh_chi_tiet(doc):
     """
@@ -1184,7 +1357,16 @@ def tao_mo_hinh_chi_tiet(doc):
     obj_buong_dot_gach.Label = "13. Buồng Đốt Củi Lót Gạch Chịu Lửa (KT 30x5x10cm, Dài 110cm, Lòng Rộng 50cm, Bao 1 Lớp Gạch 10cm, Cưa Gọt Cách 1cm Nằm Gọn Dưới Trống)"
     gan_mau(obj_buong_dot_gach, (0.84, 0.48, 0.26), line_color=(0.35, 0.18, 0.08), line_width=1.5)
 
-    return obj_trong, obj_ao_ngoai, obj_lap, obj_chong, obj_canh_ngoai, obj_canh_trong, obj_day_sau, obj_mat_truoc, obj_mat_sau, obj_chan_de, obj_cay_tham, obj_tay_cam, obj_cua_sau, obj_ban_le_sau, obj_buong_dot_gach, obj_mang_nap, items_hop_may
+    # 14. HAI CỤM BỘ CHỈNH GỐI BI TRỤC PHI 60MM LẮP TRÊN 2 MẶT MÁY (TRƯỜNG HỢP 1A)
+    # - Cụm trước: Bắt trên Mặt Máy Trước tại Y = -518mm, đỡ cốt láp trước Phi 60mm nhô ra 82mm
+    # - Cụm sau: Bắt trên Mặt Máy Sau tại Y = +618mm, đỡ cốt láp sau Phi 60mm nhô ra 82mm
+    plc_chinh_truoc = App.Placement(App.Vector(0, -518.0, 0), App.Rotation(App.Vector(0, 0, 1), 180.0))
+    plc_chinh_sau = App.Placement(App.Vector(0, 618.0, 0), App.Rotation())
+    cum_chinh_truoc = tao_cum_bo_chinh_chi_tiet(doc, plc_base=plc_chinh_truoc, is_exploded=False, prefix="May_Bo_Chinh_Truoc_")
+    cum_chinh_sau = tao_cum_bo_chinh_chi_tiet(doc, plc_base=plc_chinh_sau, is_exploded=False, prefix="May_Bo_Chinh_Sau_")
+    items_chinh_may = cum_chinh_truoc + cum_chinh_sau
+
+    return obj_trong, obj_ao_ngoai, obj_lap, obj_chong, obj_canh_ngoai, obj_canh_trong, obj_day_sau, obj_mat_truoc, obj_mat_sau, obj_chan_de, obj_cay_tham, obj_tay_cam, obj_cua_sau, obj_ban_le_sau, obj_buong_dot_gach, obj_mang_nap, items_hop_may, items_chinh_may
 
 
 def tao_hop_vo_hang(doc, plc=None, prefix=""):
@@ -1570,8 +1752,11 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         obj_buong_dot_gach=None,
         obj_mang_nap=None,
         items_hop_may=None,
+        items_chinh_may=None,
         doc_hop=None,
         items_hop=None,
+        doc_chinh=None,
+        items_chinh=None,
         parent=None,
     ):
         if not QtWidgets:
@@ -1580,6 +1765,8 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         self.doc = doc
         self.doc_hop = doc_hop
         self.items_hop = items_hop
+        self.doc_chinh = doc_chinh
+        self.items_chinh = items_chinh
 
         # Đối tượng Tab 1: Máy rang củi
         self.obj_trong = obj_trong
@@ -1599,9 +1786,11 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         self.obj_buong_dot_gach = obj_buong_dot_gach
         self.obj_mang_nap = obj_mang_nap
         self.items_hop_may = items_hop_may
+        self.items_chinh_may = items_chinh_may
         self.hop_van_may = items_hop_may[7] if items_hop_may and len(items_hop_may) > 7 else None
         self.plc_hop = App.Placement(App.Vector(0.0, -818.0, 155.0), App.Rotation(App.Vector(0, 0, 1), 90.0))
         self.is_hop_may_visible = True
+        self.is_chinh_may_visible = True
 
         # Đối tượng Tab 2: Hộp vô hàng
         if self.items_hop and len(self.items_hop) >= 11:
@@ -1676,7 +1865,7 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         header.setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #1e293b, stop:1 #334155); border-radius: 6px; padding: 6px;")
         h_layout = QtWidgets.QHBoxLayout(header)
         h_layout.setContentsMargins(10, 4, 10, 4)
-        title = QtWidgets.QLabel("🎮 ĐIỀU KHIỂN: MÁY RANG CỦI & HỘP VÔ HÀNG")
+        title = QtWidgets.QLabel("🎮 ĐIỀU KHIỂN: MÁY RANG CỦI & BỘ CHỈNH")
         title.setStyleSheet("color: #38bdf8; font-weight: bold; font-size: 13px;")
 
         self.btn_header_may = QtWidgets.QPushButton("🏭 Tab 1: Máy Rang")
@@ -1687,6 +1876,10 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         self.btn_header_hop.setStyleSheet("background-color: #0d9488; color: white; padding: 4px 10px; font-size: 10.5px; border-radius: 4px; font-weight: bold;")
         self.btn_header_hop.clicked.connect(self.chuyen_tab_hop)
 
+        self.btn_header_chinh = QtWidgets.QPushButton("⚙️ Tab 3: Bộ Chỉnh 1A")
+        self.btn_header_chinh.setStyleSheet("background-color: #f59e0b; color: white; padding: 4px 10px; font-size: 10.5px; border-radius: 4px; font-weight: bold;")
+        self.btn_header_chinh.clicked.connect(self.chuyen_tab_chinh)
+
         btn_md = QtWidgets.QPushButton("📖 Thông Số (MD)")
         btn_md.setStyleSheet("background-color: #475569; color: white; padding: 4px 10px; font-size: 10.5px; border-radius: 4px;")
         btn_md.clicked.connect(self.mo_thong_so_md)
@@ -1695,6 +1888,7 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         h_layout.addStretch()
         h_layout.addWidget(self.btn_header_may)
         h_layout.addWidget(self.btn_header_hop)
+        h_layout.addWidget(self.btn_header_chinh)
         h_layout.addWidget(btn_md)
         layout.addWidget(header)
 
@@ -1796,6 +1990,11 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         self.btn_hop_may.setStyleSheet("background-color: #059669; color: white; font-weight: bold;")
         self.btn_hop_may.clicked.connect(self.toggle_hop_may_visibility)
         g_vis.addWidget(self.btn_hop_may, 2, 0, 1, 2)
+
+        self.btn_chinh_may = QtWidgets.QPushButton("⚙️ Ẩn/Hiện Bộ Chỉnh Trục (2 Mặt Máy)")
+        self.btn_chinh_may.setStyleSheet("background-color: #d97706; color: white; font-weight: bold;")
+        self.btn_chinh_may.clicked.connect(self.toggle_chinh_may_visibility)
+        g_vis.addWidget(self.btn_chinh_may, 3, 0, 1, 2)
 
         l_tab_may.addWidget(grp_vis)
 
@@ -2023,6 +2222,113 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         l_tab_hop.addWidget(grp_bom)
 
         self.main_tabs.addTab(tab_hop, "📥 Hộp Vô Hàng & Van Gạt (Ống Ø20)")
+
+        # ---------------- TAB 3: BỘ CHỈNH GỐI BI TRỤC PHI 60MM (TRƯỜNG HỢP 1A) ----------------
+        tab_chinh = QtWidgets.QWidget()
+        l_tab_chinh = QtWidgets.QVBoxLayout(tab_chinh)
+        l_tab_chinh.setSpacing(8)
+        l_tab_chinh.setContentsMargins(6, 6, 6, 6)
+
+        # Header info Tab 3
+        chinh_info = QtWidgets.QFrame()
+        chinh_info.setStyleSheet("background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; padding: 4px;")
+        ci_layout = QtWidgets.QHBoxLayout(chinh_info)
+        ci_layout.setContentsMargins(10, 3, 10, 3)
+        t_chinh = QtWidgets.QLabel("⚙️ BỘ CHỈNH GỐI BI TRỤC PHI 60MM (TRƯỜNG HỢP 1A - HỘP TRƯỢT BU-LÔNG TĂNG ĐƠ)")
+        t_chinh.setStyleSheet("font-weight: bold; color: #92400e; font-size: 11px;")
+        v_chinh = QtWidgets.QLabel("2 Phần: Trái (Tháo Rời) | Phải (Lắp Ráp)")
+        v_chinh.setStyleSheet("font-weight: bold; color: #b45309; font-size: 11px;")
+        ci_layout.addWidget(t_chinh)
+        ci_layout.addStretch()
+        ci_layout.addWidget(v_chinh)
+        l_tab_chinh.addWidget(chinh_info)
+
+        # Camera views Tab 3
+        grp_cams_chinh = QtWidgets.QGroupBox("📐 Các Góc Nhìn & Quan Sát Bộ Chỉnh (Tab 3)")
+        l_cams_chinh = QtWidgets.QVBoxLayout(grp_cams_chinh)
+        l_cams_chinh.setSpacing(6)
+
+        r_cams_c = QtWidgets.QHBoxLayout()
+        self.btn_chinh_iso = QtWidgets.QPushButton("📐 Isometric (Tổng Thể)")
+        self.btn_chinh_iso.setStyleSheet("background-color: #0284c7; color: white;")
+        self.btn_chinh_iso.clicked.connect(self.view_chinh_iso)
+
+        self.btn_chinh_front = QtWidgets.QPushButton("👁️ Chiếu Đứng (Front)")
+        self.btn_chinh_front.setStyleSheet("background-color: #334155; color: white;")
+        self.btn_chinh_front.clicked.connect(self.view_chinh_front)
+
+        self.btn_chinh_top = QtWidgets.QPushButton("🔝 Chiếu Bằng (Top)")
+        self.btn_chinh_top.setStyleSheet("background-color: #334155; color: white;")
+        self.btn_chinh_top.clicked.connect(self.view_chinh_top)
+
+        self.btn_chinh_right = QtWidgets.QPushButton("👉 Chiếu Cạnh (Right)")
+        self.btn_chinh_right.setStyleSheet("background-color: #334155; color: white;")
+        self.btn_chinh_right.clicked.connect(self.view_chinh_right)
+
+        r_cams_c.addWidget(self.btn_chinh_iso)
+        r_cams_c.addWidget(self.btn_chinh_front)
+        r_cams_c.addWidget(self.btn_chinh_top)
+        r_cams_c.addWidget(self.btn_chinh_right)
+        l_cams_chinh.addLayout(r_cams_c)
+        l_tab_chinh.addWidget(grp_cams_chinh)
+
+        # Bảng kê vật tư & kết cấu kỹ thuật Bộ Chỉnh 1A
+        grp_bom_chinh = QtWidgets.QGroupBox("📋 Bảng Kê Chi Tiết Cụm Bộ Chỉnh 1A (Trục Ø60, Gối Bi UC212)")
+        v_bom_c = QtWidgets.QVBoxLayout(grp_bom_chinh)
+        v_bom_c.setContentsMargins(6, 6, 6, 6)
+
+        txt_bom_c = QtWidgets.QTextEdit()
+        txt_bom_c.setReadOnly(True)
+        txt_bom_c.setStyleSheet("background-color: #ffffff; border: 1px solid #e2e8f0; font-size: 10.5px; color: #1e293b;")
+        txt_bom_c.setHtml("""
+        <table style="width: 100%; border-collapse: collapse; font-family: 'Segoe UI', Arial;">
+            <tr style="background-color: #fef3c7; color: #92400e; font-weight: bold;">
+                <th style="padding: 4px; text-align: left; border-bottom: 1px solid #cbd5e1;">STT & Tên Chi Tiết</th>
+                <th style="padding: 4px; text-align: left; border-bottom: 1px solid #cbd5e1;">Quy Cách & Kích Thước Chế Tạo</th>
+                <th style="padding: 4px; text-align: center; border-bottom: 1px solid #cbd5e1;">SL / Bộ</th>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">1. Tấm đế trượt có ray dẫn hướng</td>
+                <td style="padding: 3px;">Thép tấm 16mm (220x160mm), 2 ray dẫn hướng vuông 15x15mm</td>
+                <td style="padding: 3px; text-align: center;"><b>1 tấm</b></td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+                <td style="padding: 3px;">2. Hộp trượt đỡ gối bi</td>
+                <td style="padding: 3px;">Thép hàn 12mm (180x150x60mm), 4 rãnh trượt 30x18mm (chỉnh ±15mm)</td>
+                <td style="padding: 3px; text-align: center;"><b>1 hộp</b></td>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">3. Tai ren tỳ bu-lông tăng đơ</td>
+                <td style="padding: 3px;">Thép tấm 16mm (80x50x16mm), taro ren suốt M16, hàn cứng trên đế</td>
+                <td style="padding: 3px; text-align: center;"><b>1 tai</b></td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+                <td style="padding: 3px;">4. Bu-lông tăng đơ & đai ốc hãm</td>
+                <td style="padding: 3px;">M16x80mm thép cấp bền 8.8 ren mịn + tán hãm M16 + đệm tỳ Ø28mm</td>
+                <td style="padding: 3px; text-align: center;"><b>1 bộ</b></td>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">5. Gối bi đỡ trục UC212</td>
+                <td style="padding: 3px;">Ca trong Ø60mm, ca ngoài Ø140mm, 8 viên bi cầu chịu tải hướng tâm</td>
+                <td style="padding: 3px; text-align: center;"><b>1 gối</b></td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+                <td style="padding: 3px;">6. Đoạn trục láp mẫu & rãnh then</td>
+                <td style="padding: 3px;">Trục láp C45 cốt Ø60mm x dài 140mm, phay rãnh then cavet 18x11mm</td>
+                <td style="padding: 3px; text-align: center;"><b>1 đoạn</b></td>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">7. Bu-lông siết khóa vị trí</td>
+                <td style="padding: 3px;">4 bu-lông M16x45mm thép 8.8 + long đền vênh siết qua rãnh trượt</td>
+                <td style="padding: 3px; text-align: center;"><b>4 cái</b></td>
+            </tr>
+        </table>
+        """)
+        txt_bom_c.setFixedHeight(175)
+        v_bom_c.addWidget(txt_bom_c)
+        l_tab_chinh.addWidget(grp_bom_chinh)
+
+        self.main_tabs.addTab(tab_chinh, "⚙️ Tab 3: Bộ Chỉnh 1A (Tháo Rời & Lắp Ráp)")
 
         layout.addWidget(self.main_tabs)
         self.adjustSize()
@@ -2361,6 +2667,58 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
             except Exception:
                 pass
 
+    def toggle_chinh_may_visibility(self):
+        """Ẩn/Hiện 2 cụm Bộ Chỉnh gối bi lắp trên mặt máy trước và sau."""
+        self.is_chinh_may_visible = not getattr(self, "is_chinh_may_visible", True)
+        if hasattr(self, "items_chinh_may") and self.items_chinh_may:
+            for ob in self.items_chinh_may:
+                if ob and hasattr(ob, "ViewObject") and ob.ViewObject:
+                    ob.ViewObject.Visibility = self.is_chinh_may_visible
+        if hasattr(self, "btn_chinh_may"):
+            if self.is_chinh_may_visible:
+                self.btn_chinh_may.setText("⚙️ Ẩn Bộ Chỉnh Trục (2 Mặt Máy)")
+                self.btn_chinh_may.setStyleSheet("background-color: #d97706; color: white; font-weight: bold;")
+            else:
+                self.btn_chinh_may.setText("⚙️ Hiện Bộ Chỉnh Trục (2 Mặt Máy)")
+                self.btn_chinh_may.setStyleSheet("background-color: #475569; color: white; font-weight: bold;")
+
+    # ---------------- PHƯƠNG THỨC TAB 3: BỘ CHỈNH 1A ----------------
+    def view_chinh_iso(self):
+        if kiem_tra_co_gui() and self.doc_chinh:
+            try:
+                Gui.setActiveDocument(self.doc_chinh)
+                Gui.SendMsgToActiveView("ViewAxo")
+                Gui.SendMsgToActiveView("ViewFit")
+            except Exception:
+                pass
+
+    def view_chinh_front(self):
+        if kiem_tra_co_gui() and self.doc_chinh:
+            try:
+                Gui.setActiveDocument(self.doc_chinh)
+                Gui.SendMsgToActiveView("ViewFront")
+                Gui.SendMsgToActiveView("ViewFit")
+            except Exception:
+                pass
+
+    def view_chinh_top(self):
+        if kiem_tra_co_gui() and self.doc_chinh:
+            try:
+                Gui.setActiveDocument(self.doc_chinh)
+                Gui.SendMsgToActiveView("ViewTop")
+                Gui.SendMsgToActiveView("ViewFit")
+            except Exception:
+                pass
+
+    def view_chinh_right(self):
+        if kiem_tra_co_gui() and self.doc_chinh:
+            try:
+                Gui.setActiveDocument(self.doc_chinh)
+                Gui.SendMsgToActiveView("ViewRight")
+                Gui.SendMsgToActiveView("ViewFit")
+            except Exception:
+                pass
+
     # ---------------- ĐIỀU HƯỚNG TAB & TÀI LIỆU ----------------
     def on_tab_changed(self, idx):
         if idx == 0:
@@ -2375,6 +2733,14 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
             if kiem_tra_co_gui() and self.doc_hop:
                 try:
                     Gui.setActiveDocument(self.doc_hop)
+                    Gui.SendMsgToActiveView("ViewAxo")
+                    Gui.SendMsgToActiveView("ViewFit")
+                except Exception:
+                    pass
+        elif idx == 2:
+            if kiem_tra_co_gui() and self.doc_chinh:
+                try:
+                    Gui.setActiveDocument(self.doc_chinh)
                     Gui.SendMsgToActiveView("ViewAxo")
                     Gui.SendMsgToActiveView("ViewFit")
                 except Exception:
@@ -2399,6 +2765,18 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
         if kiem_tra_co_gui() and self.doc_hop:
             try:
                 Gui.setActiveDocument(self.doc_hop)
+                Gui.SendMsgToActiveView("ViewAxo")
+                Gui.SendMsgToActiveView("ViewFit")
+            except Exception:
+                pass
+
+    def chuyen_tab_chinh(self):
+        """Chuyển sang Tab 3: Bộ Chỉnh Gối Bi Trục Phi 60mm."""
+        if hasattr(self, "main_tabs"):
+            self.main_tabs.setCurrentIndex(2)
+        if kiem_tra_co_gui() and self.doc_chinh:
+            try:
+                Gui.setActiveDocument(self.doc_chinh)
                 Gui.SendMsgToActiveView("ViewAxo")
                 Gui.SendMsgToActiveView("ViewFit")
             except Exception:
@@ -2446,7 +2824,12 @@ def chay_mo_phong():
     items_hop = tao_hop_vo_hang(doc_hop)
     doc_hop.recompute()
 
-    # 4. Căn góc nhìn Isometric, FitAll cho cả 2 tab và hiển thị bảng điều khiển
+    # 4. Tạo TAB 3: Bộ Chỉnh Gối Bi Trục Phi 60mm (Trường hợp 1A: Tháo rời & Lắp ráp)
+    doc_chinh = App.newDocument("3_Bo_Chinh_Goi_Bi_Truc_Phi60")
+    items_chinh = tao_tab_3_bo_chinh(doc_chinh)
+    doc_chinh.recompute()
+
+    # 5. Căn góc nhìn Isometric, FitAll cho cả 3 tab và hiển thị bảng điều khiển
     if kiem_tra_co_gui():
         # Căn góc nhìn cho Tab 1
         try:
@@ -2459,6 +2842,14 @@ def chay_mo_phong():
         # Căn góc nhìn cho Tab 2
         try:
             Gui.setActiveDocument(doc_hop)
+            Gui.SendMsgToActiveView("ViewAxo")
+            Gui.SendMsgToActiveView("ViewFit")
+        except Exception:
+            pass
+
+        # Căn góc nhìn cho Tab 3
+        try:
+            Gui.setActiveDocument(doc_chinh)
             Gui.SendMsgToActiveView("ViewAxo")
             Gui.SendMsgToActiveView("ViewFit")
         except Exception:
@@ -2477,20 +2868,28 @@ def chay_mo_phong():
             pass
 
         _TRONG_DIEU_KHIEN_WINDOW = BangDieuKhienHanCayTru(
-            doc_may, *items_may, doc_hop=doc_hop, items_hop=items_hop, parent=main_win
+            doc_may,
+            *items_may,
+            doc_hop=doc_hop,
+            items_hop=items_hop,
+            doc_chinh=doc_chinh,
+            items_chinh=items_chinh,
+            parent=main_win,
         )
         _TRONG_DIEU_KHIEN_WINDOW.show()
 
         App.Console.PrintMessage("\n" + "=" * 80 + "\n")
-        App.Console.PrintMessage(">> ĐÃ MỞ TỰ ĐỘNG CẢ 2 TAB: MÁY RANG CỦI VÀ HỘP VÔ HÀNG INOX 3MM!\n")
-        App.Console.PrintMessage(">> TAB 1: [1_May_Rang_Cui_Hoan_Chinh] - Trống 2 lớp, 10 cánh đảo, 10 cây chống, bệ đế, lò sa mốt.\n")
+        App.Console.PrintMessage(">> ĐÃ MỞ TỰ ĐỘNG CẢ 3 TAB: MÁY RANG CỦI, HỘP VÔ HÀNG VÀ BỘ CHỈNH 1A!\n")
+        App.Console.PrintMessage(">> TAB 1: [1_May_Rang_Cui_Hoan_Chinh] - Trống 2 lớp, 10 cánh, bệ đế, lò gạch sa mốt, 2 bộ chỉnh trước/sau.\n")
         App.Console.PrintMessage(">> TAB 2: [2_Hop_Vo_Hang_Inox_3mm] - Hình thang vuông (chữ nhật + tam giác), cách 30cm, bọc toàn bộ.\n")
-        App.Console.PrintMessage(">> Nút chuyển tab 1-click đã tích hợp sẵn trên đầu Bảng Điều Khiển!\n")
+        App.Console.PrintMessage(">> TAB 3: [3_Bo_Chinh_Goi_Bi_Truc_Phi60] - Trường hợp 1A: Chi tiết tháo rời (trái) và lắp ráp hoàn chỉnh (phải).\n")
+        App.Console.PrintMessage(">> Nút chuyển 3 Tab 1-click đã tích hợp sẵn trên đầu Bảng Điều Khiển!\n")
         App.Console.PrintMessage("=" * 80 + "\n")
     else:
-        print(">> [CLI Mode] Đã tạo thành công 2 Tab tài liệu:")
-        print(">> TAB 1: 1_May_Rang_Cui_Hoan_Chinh (Máy rang củi 2 lớp)")
-        print(">> TAB 2: 2_Hop_Vo_Hang_Inox_3mm (Hộp vô hàng inox 3mm hình thang vuông, cách 30cm, bọc kín)")
+        print(">> [CLI Mode] Đã tạo thành công 3 Tab tài liệu:")
+        print(">> TAB 1: 1_May_Rang_Cui_Hoan_Chinh (Máy rang củi 2 lớp & 2 bộ chỉnh gối bi)")
+        print(">> TAB 2: 2_Hop_Vo_Hang_Inox_3mm (Hộp vô hàng inox 3mm hình thang vuông)")
+        print(">> TAB 3: 3_Bo_Chinh_Goi_Bi_Truc_Phi60 (Bộ chỉnh 1A: Tháo rời & Lắp ráp hoàn chỉnh)")
 
 
 if __name__ == "__main__" or __name__ == "FreeCAD":

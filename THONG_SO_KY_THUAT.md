@@ -315,6 +315,58 @@
   4. **2 Chốt Pin M10 & Ê-cu tự hãm (`Hai_Chot_Pin_M10_Cua_Xa`)**:
      * 2 Bu-lông chốt phi 10mm xuyên qua lỗ đầu nửa tròn bắt trực tiếp vào cánh cửa xả sắt 18mm, giữ chặt khâu nối áp khít cánh cửa vào mặt máy khi đóng.
 
+---
+
+## 15. Bộ Chỉnh Gối Bi Trục Phi 60mm (Trường Hợp 1A: Cụm Hộp Trượt Bu-lông Tăng Đơ & Tab 3 Mô Hình Rời / Lắp Ráp)
+
+### 15.1. Khái Niệm & Vai Trò Của Bộ Chỉnh Máy Rang
+* **Bộ chỉnh máy rang** là cơ cấu định vị cơ khí chính xác dọc theo phương trục quay ($Y$), giữ nhiệm vụ sống còn trong hệ thống vận hành máy rang công nghiệp:
+  1. **Căn chỉnh khe hở nhiệt độ & chống cạ quẹt**: Giữ khe hở đầu trước giữa vành trống và mặt máy trước đúng chuẩn **$0.5\text{ mm}$**, không để trống bị bó kẹt khi giãn nở vì nhiệt ở $250^\circ\text{C} - 300^\circ\text{C}$ và triệt tiêu nguy cơ cạ kim loại làm mòn thành trống hoặc rớt hạt cà phê.
+  2. **Bù trừ độ rơ dọc trục & căn chỉnh đồng trục**: Khi lắp ráp thực tế, dung sai cơ khí của mối hàn bệ máy và thân vỏ có thể sai lệch. Bộ chỉnh cho phép người thợ siết nhả bu-lông tăng đơ để dịch chuyển ổ bi tịnh tiến mượt mà $\pm 15\text{ mm}$ (tổng hành trình $30\text{ mm}$) dọc trục.
+  3. **Đỡ tải trọng tâm trống rang**: Chịu toàn bộ tải trọng tĩnh của trống ($>150\text{ kg}$) cộng thêm $30 - 60\text{ kg}$ hạt cà phê khi rang và lực quán tính quay $40\text{ RPM}$.
+
+---
+
+### 15.2. Kết Cấu Kỹ Thuật 7 Chi Tiết Cụm Bộ Chỉnh 1A
+Cụm được thiết kế theo kết cấu thép hàn kết hợp gia công cơ khí hạng nặng:
+
+| STT | Tên Chi Tiết | Vật Liệu & Quy Cách Chế Tạo | Kích Thước Hình Học (mm) | Chức Năng |
+| :--- | :--- | :--- | :--- | :--- |
+| **1** | **Tấm đế trượt có ray** | Thép tấm kết cấu CT3 dày $16\text{ mm}$ | $220 \times 160 \times 16\text{ mm}$ | Gá cố định vào mặt máy; 2 ray vuông $15\times 15\text{ mm}$ dẫn hướng hộp trượt không bị lắc ngang. |
+| **2** | **Hộp trượt đỡ gối bi** | Thép hàn liên kết dày $12\text{ mm}$ | $180 \times 150 \times 60\text{ mm}$ | Đỡ ổ bi UC212; 4 rãnh trượt ô van $30\times 18\text{ mm}$ cho phép tịnh tiến dọc $\pm 15\text{ mm}$. |
+| **3** | **Tai ren tỳ tăng đơ** | Thép tấm dày $16\text{ mm}$, taro ren suốt | $80 \times 50 \times 16\text{ mm}$, ren M16 | Hàn cứng vuông góc trên tấm đế trượt; điểm tỳ ren cho vít me tăng đơ. |
+| **4** | **Bu-lông tăng đơ & tán hãm**| Thép hợp kim cấp bền 8.8 mạ kẽm | M16 $\times$ dài $80\text{ mm}$ + đệm tỳ $\varnothing 28\text{ mm}$ | Vặn tỳ vào thành hộp trượt để đẩy hoặc hãm vị trí; đai ốc M16 khóa chết sau khi căn chỉnh. |
+| **5** | **Gối bi đỡ trục UC212** | Ổ lăn cầu tự lựa 2 dãy bi | Ca trong $\varnothing 60\text{ mm}$, ca ngoài $\varnothing 140\text{ mm}$ | Đỡ đầu trục $\varnothing 60\text{ mm}$; 8 viên bi cầu chịu tải hướng tâm cao; có phớt chắn mỡ 2 đầu. |
+| **6** | **Đoạn trục láp mẫu & rãnh then** | Thép tròn chế tạo C45 | Cốt $\varnothing 60\text{ mm} \times 140\text{ mm}$, then $18\times 11\text{ mm}$ | Đoạn trục mẫu mô phỏng liên kết chặt chẽ với ổ bi và then cavet truyền động puly. |
+| **7** | **Bu-lông khóa vị trí (4 cái)**| Thép 8.8 lục giác chìm/ngoài | 4 bu-lông M16 $\times$ dài $45\text{ mm}$ + đệm vênh | Xỏ qua 4 rãnh trượt ô van kẹp chặt hộp trượt vào tấm đế sau khi tăng chỉnh đạt yêu cầu. |
+
+---
+
+### 15.3. Bố Trí Lắp Ráp Trên Mô Hình Máy Rang Hoàn Chỉnh (Tab 1)
+* **Cụm Bộ Chỉnh Mặt Máy Trước**:
+  * Tọa độ gá bệ: $Y = -518.0\text{ mm}$ (ốp vào mặt ngoài Mặt Máy Trước).
+  * Hướng tịnh tiến: Tấm đế trải từ $Y = -518.0 \to -534.0\text{ mm}$; hộp trượt ôm lấy đầu trục trước $\varnothing 60\text{ mm}$ ($Y \in [-600, -500\text{ mm}]$).
+  * Chức năng: Căn chỉnh trực tiếp khe hở $0.5\text{ mm}$ giữa mép trước trống và mặt máy trước.
+* **Cụm Bộ Chỉnh Mặt Máy Sau**:
+  * Tọa độ gá bệ: $Y = +618.0\text{ mm}$ (ốp vào mặt ngoài Mặt Máy Sau).
+  * Hướng tịnh tiến: Tấm đế trải từ $Y = +618.0 \to +634.0\text{ mm}$; hộp trượt ôm lấy đầu trục sau $\varnothing 60\text{ mm}$ ($Y \in [+600, +700\text{ mm}]$).
+  * Chức năng: Đỡ đầu đuôi trục, cân chỉnh độ song song và khoảng hở sau $9.95\text{ cm}$.
+
+---
+
+### 15.4. Tổ Chức Tab 3 Riêng Biệt Trong FreeCAD (`3_Bo_Chinh_Goi_Bi_Truc_Phi60`)
+* Theo đúng **Phương án 1** người dùng đã chọn:
+  * **Phần 1 (Bên Trái - Tọa độ $X = -280.0\text{ mm}$)**: **Mô hình tháo rời chi tiết (Exploded View)**.
+    * Tấm đế trượt, hộp trượt đỡ, tai ren, bu-lông tăng đơ, gối bi UC212, trục láp $\varnothing 60$ và các bu-lông M16 được tách rời theo phương không gian, thể hiện rõ từng mặt cắt, rãnh trượt $30\times 18\text{ mm}$, vòng bi và then cavet.
+  * **Phần 2 (Bên Phải - Tọa độ $X = +280.0\text{ mm}$)**: **Cụm đã gắn vào nhau hoàn chỉnh 100% (Assembled View)**.
+    * Thể hiện trạng thái làm việc thực tế: gối bi lọt khít trong hộp trượt, trục láp $\varnothing 60$ luồn xuyên tâm ca trong, bu-lông tăng đơ tỳ sát vách hộp và 4 bu-lông khóa kẹp chặt trên rãnh trượt.
+* **Tích hợp giao diện điều khiển GUI**:
+  * Nút chuyển nhanh trên Header: `⚙️ Tab 3: Bộ Chỉnh 1A`.
+  * Bộ 4 nút điều hướng góc nhìn: `📐 Isometric`, `👁️ Chiếu Đứng (Front)`, `🔝 Chiếu Bằng (Top)`, `👉 Chiếu Cạnh (Right)`.
+  * Nút ẩn/hiện bộ chỉnh trên Tab 1: `⚙️ Ẩn/Hiện Bộ Chỉnh Trục (2 Mặt Máy)`.
+  * Bảng BOM vật tư chi tiết nhúng trực tiếp trong Tab 3.
+
+
 
 
 
