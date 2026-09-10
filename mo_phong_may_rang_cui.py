@@ -337,13 +337,43 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     R_ren_dinh = 55.0
     R_ren_day = 52.0
 
-    # Tọa độ Y riêng biệt cho từng chi tiết (TÁCH XA NHAU RẤT RỘNG 15-17CM)
-    Y_base_1 = -350.0 if is_exploded else 0.0
-    Y_base_2 = -50.0 if is_exploded else 40.0
-    Y_nut    = 220.0 if is_exploded else 128.0
-    Y_4      = 400.0 if is_exploded else 75.0
-    Y_5      = 630.0 if is_exploded else 90.0
-    Y_6      = 820.0 if is_exploded else 150.0
+    L_ren2 = 115.0
+    T_hex2 = 18.0
+    R2_out_crest = R_ren_dinh - 0.5
+    R2_out_root = R_ren_day + 0.5
+    R2_in = 43.0
+
+    T_nut = 5.0
+    R_hex3 = 66.5  # S = 115mm
+
+    R4_out = 43.0
+    thick4 = 3.0
+    R4_in = R4_out - thick4
+    L4 = 65.0
+
+    R5_out = 40.0
+    R5_in = 30.0
+    B5 = 22.0
+
+    R6 = 52.0
+    T_flange6 = 8.0
+    T_spigot6 = 6.0
+
+    # Tọa độ Y riêng biệt cho từng chi tiết (TÁCH XA NHAU RẤT RỘNG 15-20CM)
+    if is_exploded:
+        Y_base_1 = -600.0  # Chi tiết 1: -600 đến -450mm
+        Y_nut    = -300.0  # Chi tiết 3: -300 đến -295mm (trên trục ren M110, cách 1: 150mm)
+        Y_base_2 = -150.0  # Chi tiết 2: -150 đến -17mm (đầu lục giác to tại -35..-17mm, cách 3: 145mm)
+        Y_4      = 150.0   # Chi tiết 4: 150 đến 215mm (cách 2: 167mm)
+        Y_5      = 400.0   # Chi tiết 5: 400 đến 422mm (cách 4: 185mm)
+        Y_6      = 620.0   # Chi tiết 6: 620 đến 628mm (cách 5: 198mm)
+    else:
+        Y_base_1 = 0.0     # Chi tiết 1: 0 đến 150mm (miệng ống tại Y = 150mm)
+        Y_nut    = 150.0   # Chi tiết 3: 150 đến 155mm (Áp sát mặt miệng chân bệ, LỘ 100% RA NGOÀI!)
+        Y_base_2 = 40.0    # Chi tiết 2: thân ren 40..155mm, đầu lục giác to S125 tại 155..173mm (kẹp sát long đền 3)
+        Y_4      = 100.0   # Chi tiết 4: 100 đến 165mm (nằm trong lòng ống 2)
+        Y_5      = 125.0   # Chi tiết 5: 125 đến 147mm (nằm trong ống 4)
+        Y_6      = 173.0   # Chi tiết 6: 173 đến 181mm (Mặt bít nguyên khối đặc kín, gờ định vị 167..173mm)
 
     # 1. Chân bệ bích 4 lỗ + Thân trụ cao 15cm ren trong (BỎ 4 ỐC MÀU)
     p_bich = Part.makeBox(W_bich, T_bich, W_bich, App.Vector(-W_bich / 2.0, Y_base_1, -W_bich / 2.0))
@@ -374,61 +404,58 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     gan_mau(obj_1, (0.35, 0.40, 0.48), line_color=(0.15, 0.20, 0.28), line_width=1.8)
     objs.append(obj_1)
 
-    # 2. Phần cố định ren ngoài M110 gắn vào 1
-    L_ong2 = 110.0
-    R2_out_crest = R_ren_dinh - 0.5
-    R2_out_root = R_ren_day + 0.5
-    R2_in = 43.0
-
-    body2 = Part.makeCylinder(R2_out_root, L_ong2, App.Vector(0, Y_base_2, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R2_in, L_ong2 + 20.0, App.Vector(0, Y_base_2 - 10.0, 0), App.Vector(0, 1, 0))
+    # 2. Phần cố định ren ngoài M110: ĐẦU BÊN PHẢI LÀ LỤC GIÁC TO HƠN
+    body2 = Part.makeCylinder(R2_out_root, L_ren2, App.Vector(0, Y_base_2, 0), App.Vector(0, 1, 0)).cut(
+        Part.makeCylinder(R2_in, L_ren2 + 20.0, App.Vector(0, Y_base_2 - 10.0, 0), App.Vector(0, 1, 0))
     )
     threads2 = []
-    for i in range(9):
-        y_t2 = Y_base_2 + 10.0 + i * 9.0
+    for i in range(10):
+        y_t2 = Y_base_2 + 8.0 + i * 9.0
         th_ring = Part.makeCylinder(R2_out_crest, 4.5, App.Vector(0, y_t2, 0), App.Vector(0, 1, 0)).cut(
             Part.makeCylinder(R2_out_root - 1.0, 6.0, App.Vector(0, y_t2 - 1.0, 0), App.Vector(0, 1, 0))
         )
         threads2.append(th_ring)
 
-    rim2 = Part.makeCylinder(R_tru_out - 2.0, 12.0, App.Vector(0, Y_base_2 + L_ong2 - 12.0, 0), App.Vector(0, 1, 0)).cut(
-        Part.makeCylinder(R2_in, 16.0, App.Vector(0, Y_base_2 + L_ong2 - 14.0, 0), App.Vector(0, 1, 0))
-    )
-    solid_2 = Part.makeCompound([body2, rim2] + threads2)
+    # ĐẦU BÊN PHẢI: LỤC GIÁC TO HƠN (S = 125mm, R_hex = 72.2mm)
+    Y_hex2 = Y_base_2 + L_ren2
+    R_hex2 = 72.2  # S = 125mm
+    pts_hex2 = []
+    for i in range(6):
+        a = math.radians(i * 60.0 + 30.0)
+        pts_hex2.append(App.Vector(R_hex2 * math.cos(a), Y_hex2, R_hex2 * math.sin(a)))
+    pts_hex2.append(pts_hex2[0])
+    head_hex2 = Part.Face(Part.makePolygon(pts_hex2)).extrude(App.Vector(0, T_hex2, 0))
+    head_hex2 = head_hex2.cut(Part.makeCylinder(R2_in, T_hex2 + 4.0, App.Vector(0, Y_hex2 - 2.0, 0), App.Vector(0, 1, 0)))
+
+    for i in range(4):
+        a_sc = math.radians(i * 90.0 + 45.0)
+        xs = 47.0 * math.cos(a_sc)
+        zs = 47.0 * math.sin(a_sc)
+        head_hex2 = head_hex2.cut(Part.makeCylinder(2.5, 12.0, App.Vector(xs, Y_hex2 + T_hex2 - 10.0, zs), App.Vector(0, 1, 0)))
+
+    solid_2 = Part.makeCompound([body2, head_hex2] + threads2)
     obj_2 = doc.addObject("Part::Feature", f"{prefix}2_Ong_Co_Dinh_Ren_Ngoai")
     obj_2.Shape = solid_2
-    obj_2.Label = f"{prefix}2. Phần Cố Định Ren Ngoài M110 (Gắn Vặn Vào 1)"
+    obj_2.Label = f"{prefix}2. Phần Cố Định Ren Ngoài M110 (Đầu Phải Lục Giác To S125)"
     gan_mau(obj_2, (0.12, 0.55, 0.82), line_color=(0.05, 0.30, 0.50), line_width=1.6)
     objs.append(obj_2)
 
-    # 3. Long đền tán khóa lục giác (vặn bằng cần lục giác 20cm)
-    pts_hex = []
-    R_hex = 68.0
+    # 3. Long đền mỏng chỉ cần 5mm (ĐÃ XÓA CÂY CÙI TRÒN, LỘ 100% RA NGOÀI)
+    pts_hex3 = []
     for i in range(6):
         a = math.radians(i * 60.0 + 30.0)
-        pts_hex.append(App.Vector(R_hex * math.cos(a), Y_nut, R_hex * math.sin(a)))
-    pts_hex.append(pts_hex[0])
-    solid_hex = Part.Face(Part.makePolygon(pts_hex)).extrude(App.Vector(0, 22.0, 0))
-    solid_hex = solid_hex.cut(Part.makeCylinder(R_ren_dinh + 0.5, 30.0, App.Vector(0, Y_nut - 4.0, 0), App.Vector(0, 1, 0)))
-
-    p_arm_start = App.Vector(R_hex, Y_nut + 11.0, 0)
-    p_arm_end = p_arm_start + App.Vector(200.0, 0, 0)
-    co_le_arm = Part.makeCylinder(8.0, 200.0, p_arm_start, App.Vector(1, 0, 0))
-    co_le_head = Part.makeSphere(12.0, p_arm_end)
-    solid_nut = solid_hex.fuse(co_le_arm).fuse(co_le_head)
+        pts_hex3.append(App.Vector(R_hex3 * math.cos(a), Y_nut, R_hex3 * math.sin(a)))
+    pts_hex3.append(pts_hex3[0])
+    solid_hex3 = Part.Face(Part.makePolygon(pts_hex3)).extrude(App.Vector(0, T_nut, 0))
+    solid_hex3 = solid_hex3.cut(Part.makeCylinder(R_ren_dinh + 0.5, T_nut + 4.0, App.Vector(0, Y_nut - 2.0, 0), App.Vector(0, 1, 0)))
 
     obj_3 = doc.addObject("Part::Feature", f"{prefix}3_Long_Den_Tan_Khoa_Luc_Giac_20cm")
-    obj_3.Shape = solid_nut
-    obj_3.Label = f"{prefix}3. Long Đền Tán Khóa Lục Giác (Vặn Bằng Cần Lục Giác 20cm)"
+    obj_3.Shape = solid_hex3
+    obj_3.Label = f"{prefix}3. Long Đền Hãm Mỏng 5mm (Đã Xóa Cây Cùi Tròn)"
     gan_mau(obj_3, (0.90, 0.42, 0.15), line_color=(0.50, 0.20, 0.05), line_width=1.8)
     objs.append(obj_3)
 
     # 4. Phần trụ tròn nhẵn dày đúng 3mm nằm trong
-    R4_out = 43.0
-    thick4 = 3.0
-    R4_in = R4_out - thick4
-    L4 = 65.0
-
     cyl4_out = Part.makeCylinder(R4_out, L4, App.Vector(0, Y_4, 0), App.Vector(0, 1, 0))
     cyl4_in = Part.makeCylinder(R4_in, L4 + 10.0, App.Vector(0, Y_4 - 5.0, 0), App.Vector(0, 1, 0))
     go_chan = Part.makeCylinder(R4_in, 5.0, App.Vector(0, Y_4, 0), App.Vector(0, 1, 0)).cut(
@@ -443,10 +470,6 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     objs.append(obj_4)
 
     # 5. Bạc đạn đỡ trục phi 60mm ở trong 4
-    R5_out = 40.0
-    R5_in = 30.0
-    B5 = 22.0
-
     out_ring5 = Part.makeCylinder(R5_out, B5, App.Vector(0, Y_5, 0), App.Vector(0, 1, 0)).cut(
         Part.makeCylinder(R5_out - 4.0, B5 + 4.0, App.Vector(0, Y_5 - 2.0, 0), App.Vector(0, 1, 0))
     )
@@ -474,27 +497,22 @@ def tao_bo_chinh_6_chi_tiet(doc, plc_base=None, is_exploded=False, prefix=""):
     gan_mau(obj_5, (0.92, 0.75, 0.22), line_color=(0.45, 0.35, 0.08), line_width=1.8)
     objs.append(obj_5)
 
-    # 6. Mặt bít (nắp bịt đầu ngoài)
-    R6 = 47.0
-    flange_bit = Part.makeCylinder(R6, 8.0, App.Vector(0, Y_6, 0), App.Vector(0, 1, 0))
-    spigot_bit = Part.makeCylinder(R2_in - 0.5, 6.0, App.Vector(0, Y_6 - 6.0, 0), App.Vector(0, 1, 0))
-    bore_bit = Part.makeCylinder(31.0, 20.0, App.Vector(0, Y_6 - 10.0, 0), App.Vector(0, 1, 0))
+    # 6. Mặt bít NGUYÊN KHỐI (Solid End Cap - Đặc kín 100%, không thủng lỗ giữa)
+    flange_bit = Part.makeCylinder(R6, T_flange6, App.Vector(0, Y_6, 0), App.Vector(0, 1, 0))
+    spigot_bit = Part.makeCylinder(R2_in - 0.5, T_spigot6, App.Vector(0, Y_6 - T_spigot6, 0), App.Vector(0, 1, 0))
+    solid_6 = flange_bit.fuse(spigot_bit)
 
-    screws6 = []
     for i in range(4):
         a_sc = math.radians(i * 90.0 + 45.0)
-        xs = 38.0 * math.cos(a_sc)
-        zs = 38.0 * math.sin(a_sc)
-        sc = Part.makeCylinder(3.0, 12.0, App.Vector(xs, Y_6 - 2.0, zs), App.Vector(0, 1, 0))
-        screws6.append(sc)
-
-    solid_6 = flange_bit.fuse(spigot_bit).cut(bore_bit)
-    if screws6:
-        solid_6 = Part.makeCompound([solid_6] + screws6)
+        xs = 47.0 * math.cos(a_sc)
+        zs = 47.0 * math.sin(a_sc)
+        hole_sc = Part.makeCylinder(3.25, T_flange6 + 4.0, App.Vector(xs, Y_6 - 2.0, zs), App.Vector(0, 1, 0))
+        cbore_sc = Part.makeCylinder(5.5, 4.0, App.Vector(xs, Y_6 + T_flange6 - 3.5, zs), App.Vector(0, 1, 0))
+        solid_6 = solid_6.cut(hole_sc).cut(cbore_sc)
 
     obj_6 = doc.addObject("Part::Feature", f"{prefix}6_Mat_Bit")
     obj_6.Shape = solid_6
-    obj_6.Label = f"{prefix}6. Mặt Bít (Nắp Bịt Đầu Chắn Bụi & Chặn Bạc Đạn)"
+    obj_6.Label = f"{prefix}6. Mặt Bít Nguyên Khối (Đặc Kín Chắn Bụi & Chặn Bạc Đạn)"
     gan_mau(obj_6, (0.65, 0.70, 0.76), line_color=(0.30, 0.35, 0.40), line_width=1.6)
     objs.append(obj_6)
 
@@ -2549,13 +2567,13 @@ class BangDieuKhienHanCayTru(QtWidgets.QDialog):
             <tr style="background-color: #f8fafc;">
                 <td style="padding: 4px; text-align: center; font-weight: bold;">2</td>
                 <td style="padding: 4px; font-weight: bold; color: #1e293b;">Phần cố định ren ngoài</td>
-                <td style="padding: 4px;">Ống trụ tiện ren ngoài M110 vặn vào chân 1, tịnh tiến căn chỉnh khe hở đầu trống rang</td>
+                <td style="padding: 4px;">Ống ren M110 vặn vào chân 1, ĐẦU PHẢI LỤC GIÁC TO S=125mm dùng cờ-lê vặn tăng chỉnh khe hở</td>
                 <td style="padding: 4px;">Thép chế tạo máy C45</td>
             </tr>
             <tr>
                 <td style="padding: 4px; text-align: center; font-weight: bold;">3</td>
-                <td style="padding: 4px; font-weight: bold; color: #1e293b;">Long đền tán khóa lục giác</td>
-                <td style="padding: 4px;">Tán hãm lục giác ren trong M110 tỳ siết mặt đầu thân 1, có cần lục giác 20cm vặn siết khóa chết chống rung</td>
+                <td style="padding: 4px; font-weight: bold; color: #1e293b;">Long đền mỏng 5mm</td>
+                <td style="padding: 4px;">Long đền / tán hãm lục giác ren trong M110, DÀY ĐÚNG 5MM (ĐÃ XÓA CÂY CÙI TRÒN) khóa cứng vị trí</td>
                 <td style="padding: 4px;">Thép C45 / Mạ kẽm</td>
             </tr>
             <tr style="background-color: #f8fafc;">
