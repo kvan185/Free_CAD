@@ -365,6 +365,40 @@
   * `⭐ Phần 2: Cụm Lắp Ráp Hoàn Chỉnh`: Tự động zoom đặc tả cụm lắp ráp ($X = +280\text{ mm}$).
   * `👁️ Chiếu Đứng (Front)`, `🔝 Chiếu Bằng (Top)`, `👉 Chiếu Cạnh (Right)`.
 
+---
+
+## 16. 4 Cây Láp Giằng Khét Ren 2 Đầu Cố Định 2 Mặt Máy (M16 x 1155mm)
+* **Quy cách chế tạo cây láp $\varnothing 16$**:
+  * Thân láp tròn đặc $\varnothing 16\text{ mm}$ (Thép hợp kim C45 tôi cải thiện).
+  * Chiều dài tổng thể: $L = 1155.0 \pm 0.5\text{ mm}$.
+  * Ren ngoài 2 đầu: $M16 \times 2.0-6\text{g}$ (đầu trước dài $30\text{ mm}$, đầu sau dài $60\text{ mm}$).
+  * Khoảng cách lọt lòng giữa 2 mặt máy: $1100.0 \pm 0.2\text{ mm}$. Phủ bì 2 mặt máy: $1136.0\text{ mm}$.
+* **Vị trí 4 cây láp giằng**:
+  * **2 Cây trên**: Tọa độ $(X = \pm 315.0\text{ mm}, Z = +315.0\text{ mm})$, bán kính $R = 445.5\text{ mm}$ (góc $45^\circ$ và $135^\circ$).
+  * **2 Cây dưới**: Đưa lên ngay chỗ cuối của đường tròn $R480\text{ mm}$ (góc thắt eo $-40^\circ$), tọa độ $(X = \pm 345.0\text{ mm}, Z = -290.0\text{ mm})$, bán kính $R = 450.7\text{ mm}$.
+  * **Khoảng hở an toàn**: Cách vỏ áo trống ($R = 415$) từ $27.7\text{ mm} \rightarrow 30.5\text{ mm}$; cách mép cung tròn mặt máy $R480$ từ $29.3\text{ mm} \rightarrow 34.5\text{ mm}$.
+* **Cơ cấu bắt ốc & Mối ghép cải tiến**:
+  * **Mặt Máy Trước (18mm)**: Không khoan thủng mặt tiền. Đầu trước cây láp vặn đai ốc M16 áp sát mặt trong ($Y = -500.0\text{ mm}$) và hàn chết chu vi ($a = 3\text{ mm}$) vào mặt máy.
+  * **Mặt Máy Sau (18mm)**: Khoan 4 lỗ thông $\varnothing 17.5\text{ mm}$. Cây láp xỏ qua, đệm long đền $\varnothing 32 \times 3\text{ mm}$ và siết cố định bằng 2 con tán kép M16 (Double Jam Nuts) chống rung tự tháo.
+
+---
+
+## 17. Lỗ Vuông Thoát Khói 30x30cm Trên Mặt Máy Sau Phía Trên Bộ Chỉnh
+* **Mục đích & Ứng dụng**:
+  * Cửa thoát gió nóng, khói và vỏ lụa cà phê trong quá trình rang (Exhaust / Hot Air Outlet), kết nối với ống dẫn gió đi vào Cyclone lắng bụi vỏ lụa và quạt hút ly tâm.
+* **Kích thước & Tọa độ hình học**:
+  * **Hình dạng**: Lỗ vuông $30\text{ cm} \times 30\text{ cm}$ ($300\text{ mm} \times 300\text{ mm}$).
+  * **Vị trí theo trục ngang X**: $X \in [-150.0\text{ mm}, +150.0\text{ mm}]$ (đối xứng qua tâm máy, chiều rộng $W = 300\text{ mm}$).
+  * **Vị trí theo trục đứng Z**: $Z \in [+100.0\text{ mm}, +400.0\text{ mm}]$ (chiều cao $H = 300\text{ mm}$).
+    * Mép dưới lỗ: $Z = +100.0\text{ mm}$ (nằm ngay phía trên cụm gối bi và bệ chỉnh trục cốt sau).
+    * Mép trên lỗ: $Z = +400.0\text{ mm}$ (ngang bằng đúng bán kính ngoài lòng trống rang $R = 400.0\text{ mm}$ để thu trọn luồng khí nóng thoát ra từ các khe hở thông gió đáy sau trống).
+  * **Vị trí theo trục dày Y**: Khoét thủng suốt chiều dày $18\text{ mm}$ của tấm Mặt Máy Sau ($Y \in [+600.0, +618.0\text{ mm}]$).
+* **Độ hở an toàn & Kết cấu cơ khí**:
+  * **Cách đỉnh bệ gối chỉnh**: Mép bệ bích vuông gang $165 \times 165\text{ mm}$ lên tới $Z = +82.5\text{ mm}$. Khoảng cách từ đỉnh bệ gối lên mép dưới lỗ vuông là **$17.5\text{ mm}$** thép tấm 18mm liền khối nguyên vẹn, đảm bảo độ cứng vững tuyệt đối cho 4 bu-lông M14 chân gối.
+  * **Cách đỉnh vòm mặt máy**: Đỉnh vòm cong mặt máy sau tại $Z = +480.0\text{ mm}$. Khoảng cách từ mép trên lỗ vuông ($Z = +400.0\text{ mm}$) lên đỉnh vòm là **$80.0\text{ mm}$** ($8\text{ cm}$).
+  * **Cách 2 góc vòm ngoài**: 2 góc trên của lỗ vuông $(X = \pm 150\text{ mm}, Z = +400\text{ mm})$ có bán kính $R = \sqrt{150^2 + 400^2} \approx 427.2\text{ mm}$. Khoảng cách tới đường cong mép ngoài mặt máy ($R = 480\text{ mm}$) còn dư an toàn tới **$52.8\text{ mm}$** ($> 5.2\text{ cm}$).
+  * **Cách 2 cây láp giằng trên**: Hai cây láp giằng trên ở vị trí $X = \pm 315.0\text{ mm}, Z = +315.0\text{ mm}$. Khoảng cách theo phương ngang từ mép lỗ ($X = \pm 150$) tới tâm cây láp là **$165.0\text{ mm}$** ($16.5\text{ cm}$ mỗi bên), hoàn toàn không cấn vướng bu-lông hay long đền.
+
 
 
 

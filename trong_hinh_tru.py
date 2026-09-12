@@ -1328,6 +1328,19 @@ def tao_mo_hinh_chi_tiet(doc):
     )
     hinh_mat_sau = hinh_mat_sau.cut(cutter_lo_sau)
 
+    # Khoét 1 lỗ vuông 30cm (300x300mm) ở mặt sau phía trên bộ chỉnh (Cửa thoát khói / thoát nhiệt đối lưu)
+    W_lo_vuong30 = 300.0
+    H_lo_vuong30 = 300.0
+    half_W_lo_vuong30 = W_lo_vuong30 / 2.0
+    Z_bot_lo_vuong30 = 100.0  # Từ Z = +100mm đến Z = +400mm (cách đỉnh bệ bích bộ chỉnh Z = +82.5mm đúng 17.5mm)
+    cutter_lo_vuong30 = Part.makeBox(
+        W_lo_vuong30,
+        T_mat + 10.0,
+        H_lo_vuong30,
+        App.Vector(-half_W_lo_vuong30, Y_mat_sau - 5.0, Z_bot_lo_vuong30)
+    )
+    hinh_mat_sau = hinh_mat_sau.cut(cutter_lo_vuong30)
+
     # Khoét 4 lỗ phi 17.5mm cho 4 cây láp giằng M16 xỏ qua mặt máy sau
     for xr, zr in pts_tie_rods:
         hole_tie_s = Part.makeCylinder(8.75, T_mat + 10.0, App.Vector(xr, Y_mat_sau - 5.0, zr), App.Vector(0, 1, 0))
@@ -1335,7 +1348,7 @@ def tao_mo_hinh_chi_tiet(doc):
 
     obj_mat_sau = doc.addObject("Part::Feature", "Mat_May_Sau_Ga_Trong_18mm")
     obj_mat_sau.Shape = hinh_mat_sau
-    obj_mat_sau.Label = "7. Mặt Máy Sau (Sắt 1.8cm, Chân Vát Gờ Đứng 5.5cm, Lỗ Cốt D65mm, Cửa Lò 50x30cm, 4 Lỗ Láp Giằng D17.5mm)"
+    obj_mat_sau.Label = "7. Mặt Máy Sau (Sắt 1.8cm, Chân Vát Gờ Đứng 5.5cm, Lỗ Cốt D65mm, Cửa Lò 50x30cm, Lỗ Vuông Thoát Khói 30x30cm, 4 Lỗ Láp Giằng D17.5mm)"
     gan_mau(obj_mat_sau, (0.28, 0.35, 0.45), line_color=(0.10, 0.15, 0.25), line_width=2.0)
 
     # -------------------------------------------------------------
@@ -1414,6 +1427,7 @@ def tao_mo_hinh_chi_tiet(doc):
     obj_rear_nuts.Shape = Part.makeCompound(solids_rear_double_nuts)
     obj_rear_nuts.Label = "7c3. 8 Đai Ốc M16 (2 Tán Kép/Cây) & Long Đền Siết Khóa Cố Định Mặt Máy Sau"
     gan_mau(obj_rear_nuts, (0.85, 0.70, 0.20), line_color=(0.40, 0.30, 0.05), line_width=1.2)
+    obj_tie_bolts = obj_rear_nuts
 
     # 7b. MÁNG NẠP LIỆU DẪN HƯỚNG INOX 304 CHỐNG RỚT HẠT (MẶT TRƯỚC VÀO SÂU TRỐNG 6CM, ĐỘ DỐC CỰC ĐẠI 50.6°):
     # - Vượt qua khe hở quay 2mm giữa mép trống và mặt máy trước tĩnh (Y = -500mm)
